@@ -18,5 +18,6 @@ public class Champion {
     public Stats stats;
     public Spells spells;
     public Passive passive;
+    public Recommended recommended;
 
 }
