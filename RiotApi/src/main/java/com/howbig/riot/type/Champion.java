@@ -14,6 +14,7 @@ public class Champion {
     public String[] allytips;
     public String[] enemytips;
     public String[] tags;
-   
+    public String partype;
+    public Stats stats;
 
 }
