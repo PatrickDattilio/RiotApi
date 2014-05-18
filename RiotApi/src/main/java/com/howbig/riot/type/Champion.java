@@ -5,6 +5,8 @@ package com.howbig.riot.type;
  */
 public class Champion {
     public String id;
-
+    public String name;
+    public String title;
+    public Image image;
 
 }
