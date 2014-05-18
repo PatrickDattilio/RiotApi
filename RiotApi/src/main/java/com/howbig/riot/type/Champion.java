@@ -8,5 +8,6 @@ public class Champion {
     public String name;
     public String title;
     public Image image;
+    public Skins skins;
 
 }
