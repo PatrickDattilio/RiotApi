@@ -16,5 +16,6 @@ public class Champion {
     public String[] tags;
     public String partype;
     public Stats stats;
+    public Spells spells;
 
 }
