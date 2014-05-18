@@ -17,5 +17,6 @@ public class Champion {
     public String partype;
     public Stats stats;
     public Spells spells;
+    public Passive passive;
 
 }
