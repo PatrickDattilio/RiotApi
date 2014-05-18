@@ -9,5 +9,11 @@ public class Champion {
     public String title;
     public Image image;
     public Skins skins;
+    public String lore;
+    public String blurb;
+    public String[] allytips;
+    public String[] enemytips;
+    public String[] tags;
+   
 
 }
