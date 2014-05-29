@@ -8,16 +8,17 @@ public class Champion {
     public String name;
     public String title;
     public Image image;
-    public Skins skins;
+    public Skin[] skins;
     public String lore;
     public String blurb;
     public String[] allytips;
     public String[] enemytips;
     public String[] tags;
     public String partype;
+    public Info info;
     public Stats stats;
-    public Spells spells;
+    public Spell[] spells;
     public Passive passive;
-    public Recommended recommended;
+    public Recommended[] recommended;
 
 }

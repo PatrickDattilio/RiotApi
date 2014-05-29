@@ -1,0 +1,72 @@
+package com.howbig.riot.type;
+
+/**
+ * Created by Alex on 5/21/2014.
+ */
+public class ItemStats {
+    double flatHPPoolMod;
+    double rFlatHPModPerLevel;
+    double flatMPPoolMod;
+    double rFlatMPModPerLevel;
+    double percentHPPoolMod;
+    double percentMPPoolMod;
+    double flatHPRegenMod;
+    double rFlatHPRegenModPerLevel;
+    double percentHPRegenMod;
+    double flatMPRegenMod;
+    double rFlatMpRegenModPerLevel;
+    double percentMPRegenMod;
+    double flatArmorMod;
+    double rFlatArmorModPerLevel;
+    double percentArmorMod;
+    double rFlatArmorPenetrationMod;
+    double rFlatArmorPenetrationModPerLevel;
+    double rPercentArmorPenetrationMod;
+    double rPercentArmorPenetrationModPerLevel;
+    double flatPhysicalDamageMod;
+    double rFlatPhysicalDamageModPerLevel;
+    double percentPhysicalDamageMod;
+    double flatMagicDamageMod;
+    double rFlatMagicDamageModPerLevel;
+    double percentMagicDamageMod;
+    double flatMovementSpeedMod;
+    double rFlatMovementSpeedModPerLevel;
+    double percentMovementSpeedMod;
+    double rPercentMovementSpeedModPerLevel;
+    double flatAttackSpeedMod;
+    double percentAttackSpeedMod;
+    double rPercentAttackSpeedModPerLevel;
+    double rFlatDodgeMod;
+    double rFlatDodgeModPerLevel;
+    double percentDodgeMod;
+    double flatCritChanceMod;
+    double rFlatCritChanceModPerLevel;
+    double percentCritChanceMod;
+    double flatCritDamageMod;
+    double rFlatCritDamageModPerLevel;
+    double percentCritDamageMod;
+    double flatBlockMod;
+    double percentBlockMod;
+    double flatSpellBlockMod;
+    double rFlatSpellBlockModPerLevel;
+    double percentSpellBlockMod;
+    double flatEXPBonus;
+    double percentEXPBonus;
+    double rPercentCoolDownMod;
+    double rPercentCoolDownModPerLevel;
+    double rFlatTimeDeadMod;
+    double rFlatTimeDeadModPerLevel;
+    double rPercentTimeDeadMod;
+    double rPercentTimeDeadModPerLevel;
+    double rFlatGoldPer10Mod;
+    double rFlatMagicPenetrationMod;
+    double rFlatMagicPenetrationModPerLevel;
+    double rPercentMagicPenetrationMod;
+    double rPercentMagicPenetrationModPerLevel;
+    double flatEnergyRegenMod;
+    double rFlatEnergyRegenModPerLevel;
+    double flatEnergyPoolMod;
+    double rFlatEnergyPoolModPerLevel;
+    double percentLifeStealMod;
+    double percentSpellVampMod;
+}
