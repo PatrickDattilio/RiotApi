@@ -1,4 +1,4 @@
-package com.howbig.riot.type.arune;
+package com.howbig.riot.type.rune;
 
 /**
  * Created by Alex on 5/29/2014.

@@ -7,9 +7,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.howbig.riot.type.Gold;
-import com.howbig.riot.type.aitem.Item;
-import com.howbig.riot.type.aitem.ItemRune;
-import com.howbig.riot.type.aitem.ItemStats;
+import com.howbig.riot.type.item.Item;
+import com.howbig.riot.type.item.ItemRune;
+import com.howbig.riot.type.item.ItemStats;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

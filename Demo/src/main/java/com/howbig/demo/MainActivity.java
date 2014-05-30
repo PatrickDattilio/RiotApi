@@ -15,9 +15,9 @@ import com.howbig.riot.api.ChampionRequestDeserializer;
 import com.howbig.riot.api.DragonService;
 import com.howbig.riot.api.SpellDeserializer;
 import com.howbig.riot.api.VarsDeserializer;
-import com.howbig.riot.type.achampion.Champion;
-import com.howbig.riot.type.achampion.ChampionJsonResponse;
-import com.howbig.riot.type.achampion.Spell;
+import com.howbig.riot.type.champion.Champion;
+import com.howbig.riot.type.champion.ChampionJsonResponse;
+import com.howbig.riot.type.champion.Spell;
 import com.howbig.riot.type.Vars;
 
 import retrofit.RestAdapter;

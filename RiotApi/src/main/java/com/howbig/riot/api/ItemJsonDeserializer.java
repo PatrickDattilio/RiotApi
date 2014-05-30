@@ -6,10 +6,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.howbig.riot.type.aitem.ItemGroup;
-import com.howbig.riot.type.aitem.Item;
-import com.howbig.riot.type.aitem.ItemTree;
-import com.howbig.riot.type.aitem.ItemsJsonResponse;
+import com.howbig.riot.type.item.ItemGroup;
+import com.howbig.riot.type.item.Item;
+import com.howbig.riot.type.item.ItemTree;
+import com.howbig.riot.type.item.ItemsJsonResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.howbig.riot.type.aitem;
+package com.howbig.riot.type.item;
 
 /**
  * Created by Alex on 5/29/2014.

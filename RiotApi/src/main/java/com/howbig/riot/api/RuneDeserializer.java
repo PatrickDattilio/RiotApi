@@ -8,10 +8,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.howbig.riot.type.Gold;
-import com.howbig.riot.type.aitem.ItemImage;
-import com.howbig.riot.type.aitem.ItemStats;
-import com.howbig.riot.type.arune.Rune;
-import com.howbig.riot.type.arune.RuneInfo;
+import com.howbig.riot.type.item.ItemImage;
+import com.howbig.riot.type.item.ItemStats;
+import com.howbig.riot.type.rune.Rune;
+import com.howbig.riot.type.rune.RuneInfo;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

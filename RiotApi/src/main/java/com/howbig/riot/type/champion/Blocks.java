@@ -1,4 +1,4 @@
-package com.howbig.riot.type.achampion;
+package com.howbig.riot.type.champion;
 
 import com.howbig.riot.type.RecommededItems;
 

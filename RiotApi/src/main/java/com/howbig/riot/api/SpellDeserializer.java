@@ -6,9 +6,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.howbig.riot.type.achampion.Image;
-import com.howbig.riot.type.achampion.LevelTip;
-import com.howbig.riot.type.achampion.Spell;
+import com.howbig.riot.type.champion.Image;
+import com.howbig.riot.type.champion.LevelTip;
+import com.howbig.riot.type.champion.Spell;
 import com.howbig.riot.type.Vars;
 
 /**
