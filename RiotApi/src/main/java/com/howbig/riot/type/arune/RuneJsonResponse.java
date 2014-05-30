@@ -1,4 +1,4 @@
-package com.howbig.riot.type.Rune;
+package com.howbig.riot.type.arune;
 
 import java.util.ArrayList;
 

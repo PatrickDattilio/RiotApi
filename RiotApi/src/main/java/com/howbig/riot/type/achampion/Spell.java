@@ -1,4 +1,4 @@
-package com.howbig.riot.type.Champion;
+package com.howbig.riot.type.achampion;
 
 import com.howbig.riot.type.Vars;
 

@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.howbig.riot.type.Champion.Blocks;
+import com.howbig.riot.type.achampion.Blocks;
 import com.howbig.riot.type.RecommededItems;
 
 import java.lang.reflect.Type;

@@ -1,4 +1,4 @@
-package com.howbig.riot.type.Champion;
+package com.howbig.riot.type.achampion;
 
 /**
  * Created by Patrick Dattilio on 5/18/2014.

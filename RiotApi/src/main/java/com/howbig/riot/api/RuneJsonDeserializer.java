@@ -5,8 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.howbig.riot.type.Rune.Rune;
-import com.howbig.riot.type.Rune.RuneJsonResponse;
+import com.howbig.riot.type.arune.Rune;
+import com.howbig.riot.type.arune.RuneJsonResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

@@ -1,6 +1,4 @@
-package com.howbig.riot.type.Champion;
-
-import com.howbig.riot.type.Champion.Champion;
+package com.howbig.riot.type.achampion;
 
 /**
  * Created by Patrick Dattilio on 5/18/2014.

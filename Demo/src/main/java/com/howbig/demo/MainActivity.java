@@ -1,8 +1,8 @@
 package com.howbig.demo;
 
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +15,9 @@ import com.howbig.riot.api.ChampionRequestDeserializer;
 import com.howbig.riot.api.DragonService;
 import com.howbig.riot.api.SpellDeserializer;
 import com.howbig.riot.api.VarsDeserializer;
-import com.howbig.riot.type.Champion;
-import com.howbig.riot.type.ChampionJsonResponse;
-import com.howbig.riot.type.Spell;
+import com.howbig.riot.type.achampion.Champion;
+import com.howbig.riot.type.achampion.ChampionJsonResponse;
+import com.howbig.riot.type.achampion.Spell;
 import com.howbig.riot.type.Vars;
 
 import retrofit.RestAdapter;

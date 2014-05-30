@@ -1,8 +1,8 @@
-package com.howbig.riot.type.Rune;
+package com.howbig.riot.type.arune;
 
 import com.howbig.riot.type.Gold;
-import com.howbig.riot.type.Item.ItemImage;
-import com.howbig.riot.type.Item.ItemStats;
+import com.howbig.riot.type.aitem.ItemImage;
+import com.howbig.riot.type.aitem.ItemStats;
 
 import java.util.Map;
 

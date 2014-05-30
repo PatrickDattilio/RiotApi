@@ -1,8 +1,8 @@
 package com.howbig.riot.api;
 
-import com.howbig.riot.type.Champion.ChampionJsonResponse;
-import com.howbig.riot.type.Item.ItemsJsonResponse;
-import com.howbig.riot.type.Rune.RuneJsonResponse;
+import com.howbig.riot.type.achampion.ChampionJsonResponse;
+import com.howbig.riot.type.aitem.ItemsJsonResponse;
+import com.howbig.riot.type.arune.RuneJsonResponse;
 
 import retrofit.http.GET;
 import retrofit.http.Path;

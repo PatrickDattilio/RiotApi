@@ -6,8 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.howbig.riot.type.Champion.Champion;
-import com.howbig.riot.type.Champion.ChampionJsonResponse;
+import com.howbig.riot.type.achampion.Champion;
+import com.howbig.riot.type.achampion.ChampionJsonResponse;
 
 import java.lang.reflect.Type;
 import java.util.Map;

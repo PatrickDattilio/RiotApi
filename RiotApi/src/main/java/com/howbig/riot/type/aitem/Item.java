@@ -1,4 +1,4 @@
-package com.howbig.riot.type.Item;
+package com.howbig.riot.type.aitem;
 
 import com.howbig.riot.type.Gold;
 
