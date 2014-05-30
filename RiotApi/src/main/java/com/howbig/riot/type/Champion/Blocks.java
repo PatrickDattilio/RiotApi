@@ -1,4 +1,6 @@
-package com.howbig.riot.type;
+package com.howbig.riot.type.Champion;
+
+import com.howbig.riot.type.RecommededItems;
 
 /**
  * Created by Patrick Dattilio on 5/18/2014.

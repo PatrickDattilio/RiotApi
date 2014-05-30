@@ -1,7 +1,8 @@
 package com.howbig.riot.api;
 
-import com.howbig.riot.type.ChampionJsonResponse;
-import com.howbig.riot.type.ItemsJsonResponse;
+import com.howbig.riot.type.Champion.ChampionJsonResponse;
+import com.howbig.riot.type.Item.ItemsJsonResponse;
+import com.howbig.riot.type.Rune.RuneJsonResponse;
 
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -16,4 +17,7 @@ public interface DragonService {
 
     @GET("/data/en_US/item.json")
     ItemsJsonResponse getItems();
+
+    @GET("/data/en_US/rune.json")
+    RuneJsonResponse getRune();
 }

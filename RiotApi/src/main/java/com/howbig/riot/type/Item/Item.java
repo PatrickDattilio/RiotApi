@@ -1,4 +1,6 @@
-package com.howbig.riot.type;
+package com.howbig.riot.type.Item;
+
+import com.howbig.riot.type.Gold;
 
 import java.util.Map;
 

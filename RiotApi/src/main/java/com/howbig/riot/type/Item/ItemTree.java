@@ -1,4 +1,4 @@
-package com.howbig.riot.type;
+package com.howbig.riot.type.Item;
 
 import java.util.ArrayList;
 
