@@ -1,4 +1,4 @@
-package com.howbig.mobadroid;
+package com.howbig.demo;
 
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.internal.bind.DateTypeAdapter;
 import com.howbig.riot.api.ApiService;
 import com.howbig.riot.api.ChampionRequestDeserializer;
 import com.howbig.riot.api.DragonService;
