@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="1_retrofit-1.5.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Demo/build/exploded-aar/RiotApi/RiotApi/unspecified/libs/retrofit-1.5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ideaLibSources/retrofit-1.5.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
