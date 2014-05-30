@@ -11,14 +11,24 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.howbig.riot.api.ApiService;
+import com.howbig.riot.api.BlocksDeserializer;
 import com.howbig.riot.api.ChampionRequestDeserializer;
 import com.howbig.riot.api.DragonService;
+import com.howbig.riot.api.ItemDeserializer;
+import com.howbig.riot.api.ItemJsonDeserializer;
+import com.howbig.riot.api.RuneDeserializer;
+import com.howbig.riot.api.RuneJsonDeserializer;
 import com.howbig.riot.api.SpellDeserializer;
 import com.howbig.riot.api.VarsDeserializer;
-import com.howbig.riot.type.champion.Champion;
+import com.howbig.riot.type.champion.Blocks;
+
 import com.howbig.riot.type.champion.ChampionJsonResponse;
 import com.howbig.riot.type.champion.Spell;
 import com.howbig.riot.type.Vars;
+import com.howbig.riot.type.item.Item;
+import com.howbig.riot.type.item.ItemsJsonResponse;
+import com.howbig.riot.type.rune.Rune;
+import com.howbig.riot.type.rune.RuneJsonResponse;
 
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
@@ -41,6 +51,11 @@ public class MainActivity extends ActionBarActivity {
                         .registerTypeAdapter(ChampionJsonResponse.class, new ChampionRequestDeserializer())
                         .registerTypeAdapter(Spell.class, new SpellDeserializer())
                         .registerTypeAdapter(Vars.class, new VarsDeserializer())
+                        .registerTypeAdapter(Blocks.class, new BlocksDeserializer())
+                        .registerTypeAdapter(Item.class, new ItemDeserializer())
+                        .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
+                        .registerTypeAdapter(Rune.class, new RuneDeserializer())
+                        .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
                         .create();
 
                 RestAdapter restAdapter = new RestAdapter.Builder()
@@ -61,9 +76,13 @@ public class MainActivity extends ActionBarActivity {
                         .build();
                 DragonService dragonService = restAdapter.create(DragonService.class);
 
-                ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
+                ItemsJsonResponse items= dragonService.getItems();
+                RuneJsonResponse runes= dragonService.getRune();
+
+
+               /* ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
                 Champion ashe = asheResponse.data;
-                String test = ashe.name;
+                String test = ashe.name;*/
                 return null;
             }
         }.execute();
