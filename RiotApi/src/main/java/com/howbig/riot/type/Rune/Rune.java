@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class Rune {
     public String name;
-    publi
+    public int id;
     public RuneInfo rune;
     public ItemImage image;
     public Gold gold;
