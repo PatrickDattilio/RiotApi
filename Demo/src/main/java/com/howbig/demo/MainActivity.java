@@ -22,6 +22,7 @@ import com.howbig.riot.api.SpellDeserializer;
 import com.howbig.riot.api.VarsDeserializer;
 import com.howbig.riot.type.champion.Blocks;
 
+import com.howbig.riot.type.champion.Champion;
 import com.howbig.riot.type.champion.ChampionJsonResponse;
 import com.howbig.riot.type.champion.Spell;
 import com.howbig.riot.type.Vars;
@@ -47,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             protected Void doInBackground(Void... params) {
                 Gson gson = new GsonBuilder()
-                        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+
                         .registerTypeAdapter(ChampionJsonResponse.class, new ChampionRequestDeserializer())
                         .registerTypeAdapter(Spell.class, new SpellDeserializer())
                         .registerTypeAdapter(Vars.class, new VarsDeserializer())
@@ -80,9 +81,9 @@ public class MainActivity extends ActionBarActivity {
                 RuneJsonResponse runes= dragonService.getRune();
 
 
-               /* ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
+                ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
                 Champion ashe = asheResponse.data;
-                String test = ashe.name;*/
+                String test = ashe.name;
                 return null;
             }
         }.execute();

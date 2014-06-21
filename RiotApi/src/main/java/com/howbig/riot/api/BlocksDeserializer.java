@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.howbig.riot.type.champion.Blocks;
-import com.howbig.riot.type.RecommededItems;
+import com.howbig.riot.type.RecommendedItems;
 
 import java.lang.reflect.Type;
 
@@ -21,12 +21,12 @@ public class BlocksDeserializer implements JsonDeserializer<Blocks>{
         JsonObject obj= (JsonObject)json;
         Blocks blocks = new Blocks();
         blocks.type=obj.get("type").getAsString();
-        if(obj.get("recMath").isJsonPrimitive()) {
+        if( obj.has("recMath") && obj.get("recMath").isJsonPrimitive()) {
             blocks.recMath = obj.get("recMath").getAsBoolean();
         }else{
            blocks.recMath=null;
         }
-        blocks.recommendeditems= context.deserialize(obj.get("recommendeditems"), new TypeToken <RecommededItems[]>(){
+        blocks.recommendeditems= context.deserialize(obj.get("recommendeditems"), new TypeToken <RecommendedItems[]>(){
         }.getType());
         return blocks;
     }

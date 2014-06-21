@@ -40,20 +40,19 @@ public class ItemJsonDeserializer implements JsonDeserializer<ItemsJsonResponse>
             nextItem.id=Integer.parseInt(entry.getKey());
             response.data.add(nextItem);
         }
+
+
         response.groups= new ArrayList<ItemGroup>();
-        ArrayList<ItemGroup> groupsObj=jsonDeserializationContext.deserialize(obj.get("groups"), new TypeToken<ArrayList<ItemGroup>>(){}.getType());
-        for(ItemGroup currGroup:groupsObj){
-            response.groups.add(currGroup);
+        ArrayList<ItemGroup> groups=jsonDeserializationContext.deserialize(obj.get("groups"), new TypeToken<ArrayList<ItemGroup>>(){}.getType());
+        for(ItemGroup group:groups){
+            response.groups.add(group);
         }
+
         response.tree= new ArrayList<ItemTree>();
         ArrayList<ItemTree> treeObj= jsonDeserializationContext.deserialize(obj.get("tree"), new TypeToken<ArrayList<ItemTree>>(){}.getType());
         for(ItemTree currTree:treeObj){
             response.tree.add(currTree);
         }
-
-
-
-
 
         return response;
     }

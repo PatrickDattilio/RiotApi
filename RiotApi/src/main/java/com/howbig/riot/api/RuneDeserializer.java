@@ -21,10 +21,10 @@ import java.util.Set;
 /**
  * Created by Alex on 5/29/2014.
  */
-public class RuneDeserializer implements JsonDeserializer<Rune>{
+public class RuneDeserializer implements JsonDeserializer<Rune> {
 
     @Override
-    public Rune deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException{
+    public Rune deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject obj = (JsonObject) json;
         Rune rune = new Rune();
         rune.name = obj.get("name").getAsString();
@@ -34,22 +34,35 @@ public class RuneDeserializer implements JsonDeserializer<Rune>{
         }.getType());
         rune.gold = context.deserialize(obj.get("gold"), new TypeToken<Gold>() {
         }.getType());
-        rune.group = obj.get("group").getAsString();
+        if (obj.has("group"))
+            rune.group = obj.get("group").getAsString();
         rune.description = obj.get("description").getAsString();
-        rune.colloq = obj.get("colloq").getAsString();
-        rune.plaintext = obj.get("plaintext").getAsString();
-        rune.consumed = obj.get("consumed").getAsBoolean();
-        rune.stacks = obj.get("stacks").getAsInt();
-        rune.depth = obj.get("depth").getAsInt();
-        rune.consumeOnFull = obj.get("consumedOnFull").getAsBoolean();
+        if (!obj.get("colloq").isJsonNull()) {
+            rune.colloq = obj.get("colloq").getAsString();
+        }
+        if (!obj.get("plaintext").isJsonNull()) {
+            rune.plaintext = obj.get("plaintext").getAsString();
+        }
+        if (obj.has("consumed"))
+            rune.consumed = obj.get("consumed").getAsBoolean();
+        if (obj.has("stacks"))
+            rune.stacks = obj.get("stacks").getAsInt();
+        if (obj.has("depth"))
+            rune.depth = obj.get("depth").getAsInt();
+        if (obj.has("consumeOnFull"))
+            rune.consumeOnFull = obj.get("consumeOnFull").getAsBoolean();
         rune.from = context.deserialize(obj.get("from"), new TypeToken<String[]>() {
         }.getType());
         rune.into = context.deserialize(obj.get("into"), new TypeToken<String[]>() {
         }.getType());
-        rune.specialRecipe = obj.get("specialRecipe").getAsInt();
-        rune.inStore = obj.get("inStore").getAsBoolean();
-        rune.hideFromAll = obj.get("hideFromAll").getAsBoolean();
-        rune.requiredChampion = obj.get("requiredChampion").getAsString();
+        if (obj.has("specialRecipe"))
+            rune.specialRecipe = obj.get("specialRecipe").getAsInt();
+        if (obj.has("inStore"))
+            rune.inStore = obj.get("inStore").getAsBoolean();
+        if (obj.has("hideFromAll"))
+            rune.hideFromAll = obj.get("hideFromAll").getAsBoolean();
+        if (obj.has("requiredChampion"))
+            rune.requiredChampion = obj.get("requiredChampion").getAsString();
         rune.stats = context.deserialize(obj.get("stats"), new TypeToken<ItemStats>() {
         }.getType());
         rune.tags = context.deserialize(obj.get("tags"), new TypeToken<String[]>() {
