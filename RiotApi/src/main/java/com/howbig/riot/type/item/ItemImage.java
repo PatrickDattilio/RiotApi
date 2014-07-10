@@ -4,11 +4,11 @@ package com.howbig.riot.type.item;
  * Created by Alex on 5/29/2014.
  */
 public class ItemImage {
-    String full;
-    String sprite;
-    String group;
-    int x;
-    int y;
-    int w;
-    int h;
+    public String full;
+    public String sprite;
+    public String group;
+    public int x;
+    public int y;
+    public int w;
+    public int h;
 }

@@ -7,9 +7,7 @@ import java.util.ArrayList;
  */
 public class MasteryTree {
 
-    public ArrayList<ArrayList<MasteryTreeElement>> Offense= new ArrayList<ArrayList<MasteryTreeElement>>();
-    public ArrayList<ArrayList<MasteryTreeElement>> Defense=  new ArrayList<ArrayList<MasteryTreeElement>>();
-    public ArrayList<ArrayList<MasteryTreeElement>> Utility=  new ArrayList<ArrayList<MasteryTreeElement>>();
-    //public ArrayList<MasteryTreeElement>[] Defense= (ArrayList<MasteryTreeElement>[]) new ArrayList[6];
-   // public ArrayList<MasteryTreeElement>[] Utility= (ArrayList<MasteryTreeElement>[]) new ArrayList[6];
+    public ArrayList<ArrayList<MasteryTreeElement>> Offense = new ArrayList<ArrayList<MasteryTreeElement>>();
+    public ArrayList<ArrayList<MasteryTreeElement>> Defense = new ArrayList<ArrayList<MasteryTreeElement>>();
+    public ArrayList<ArrayList<MasteryTreeElement>> Utility = new ArrayList<ArrayList<MasteryTreeElement>>();
 }
