@@ -16,6 +16,8 @@ import com.howbig.riot.api.ChampionRequestDeserializer;
 import com.howbig.riot.api.DragonService;
 import com.howbig.riot.api.ItemDeserializer;
 import com.howbig.riot.api.ItemJsonDeserializer;
+import com.howbig.riot.api.MasteryDeserializer;
+import com.howbig.riot.api.MasteryJsonDeserializer;
 import com.howbig.riot.api.RuneDeserializer;
 import com.howbig.riot.api.RuneJsonDeserializer;
 import com.howbig.riot.api.SpellDeserializer;
@@ -28,6 +30,8 @@ import com.howbig.riot.type.champion.Spell;
 import com.howbig.riot.type.Vars;
 import com.howbig.riot.type.item.Item;
 import com.howbig.riot.type.item.ItemsJsonResponse;
+import com.howbig.riot.type.mastery.Mastery;
+import com.howbig.riot.type.mastery.MasteryJsonResponse;
 import com.howbig.riot.type.rune.Rune;
 import com.howbig.riot.type.rune.RuneJsonResponse;
 
@@ -57,6 +61,8 @@ public class MainActivity extends ActionBarActivity {
                         .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
                         .registerTypeAdapter(Rune.class, new RuneDeserializer())
                         .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
+                        .registerTypeAdapter(Mastery.class, new MasteryDeserializer())
+                        .registerTypeAdapter(MasteryJsonResponse.class, new MasteryJsonDeserializer())
                         .create();
 
                 RestAdapter restAdapter = new RestAdapter.Builder()
@@ -79,6 +85,7 @@ public class MainActivity extends ActionBarActivity {
 
                 ItemsJsonResponse items= dragonService.getItems();
                 RuneJsonResponse runes= dragonService.getRune();
+                MasteryJsonResponse masteries=dragonService.getMastery();
 
 
                 ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
