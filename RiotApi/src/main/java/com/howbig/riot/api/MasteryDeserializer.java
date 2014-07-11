@@ -24,8 +24,8 @@ public class MasteryDeserializer implements JsonDeserializer<Mastery> {
         mastery.id=obj.get("id").getAsInt();
         mastery.name=obj.get("name").getAsString();
         mastery.description=context.deserialize(obj.get("description"), new TypeToken<ArrayList<String>>() {
-        }.getClass());
-        mastery.image= context.deserialize(obj.get("image"), new TypeToken<ItemImage>(){}.getClass());
+        }.getType());
+        mastery.image= context.deserialize(obj.get("image"), new TypeToken<ItemImage>(){}.getType());
         mastery.ranks= obj.get("ranks").getAsInt();
         mastery.prereq= obj.get("prereq").getAsString();
         return mastery;
