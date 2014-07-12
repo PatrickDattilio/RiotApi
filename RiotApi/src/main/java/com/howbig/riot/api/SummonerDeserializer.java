@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.howbig.riot.type.Vars;
 import com.howbig.riot.type.item.ItemImage;
+import com.howbig.riot.type.summoner.LevelTip;
 import com.howbig.riot.type.summoner.Summoner;
 
 import java.lang.reflect.Type;
@@ -25,6 +26,7 @@ public class SummonerDeserializer implements JsonDeserializer<Summoner> {
         summoner.name=obj.get("name").getAsString();
         summoner.description=obj.get("description").getAsString();
         summoner.tooltip=obj.get("tooltip").getAsString();
+        summoner.leveltip=context.deserialize(obj.get("leveltip"), new TypeToken<LevelTip>(){}.getType());
         summoner.maxrank= obj.get("maxrank").getAsInt();
         summoner.cooldown= context.deserialize(obj.get("cooldown"), new TypeToken<int []>(){}.getType());
         summoner.cooldownBurn= obj.get("cooldownBurn").getAsString();
