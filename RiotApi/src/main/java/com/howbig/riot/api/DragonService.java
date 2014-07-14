@@ -4,6 +4,7 @@ import com.howbig.riot.type.champion.ChampionJsonResponse;
 import com.howbig.riot.type.item.ItemsJsonResponse;
 import com.howbig.riot.type.mastery.MasteryJsonResponse;
 import com.howbig.riot.type.rune.RuneJsonResponse;
+import com.howbig.riot.type.summoner.SummonerJsonResponse;
 
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -24,4 +25,7 @@ public interface DragonService {
 
     @GET("/data/en_US/mastery.json")
     MasteryJsonResponse getMastery();
+
+    @GET("/data/en_US/summoner.json")
+    SummonerJsonResponse getSummoner();
 }

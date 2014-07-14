@@ -39,7 +39,7 @@ public class MasteryJsonDeserializer implements JsonDeserializer<MasteryJsonResp
                 response.tree.Offense = lists;
             else if (entry.getKey().equals("Defense"))
                 response.tree.Defense = lists;
-            else if (entry.getValue().equals("Utility"))
+            else if (entry.getKey().equals("Utility"))
                 response.tree.Utility = lists;
         }
 
@@ -49,7 +49,6 @@ public class MasteryJsonDeserializer implements JsonDeserializer<MasteryJsonResp
         for (Map.Entry<String, JsonElement> entry : set) {
             Mastery nextMastery = context.deserialize(entry.getValue(), new TypeToken<Mastery>() {
             }.getType());
-            nextMastery.id = Integer.parseInt(entry.getKey());
             response.data.add(nextMastery);
         }
 
