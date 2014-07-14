@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.howbig.riot" >
+    package="com.howbig.riot">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
-        <service
-            android:name=".service.DatabaseService"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
+        android:label="@string/app_name">
         <service
             android:name=".service.DownloadService"
-            android:exported="false" >
-        </service>
+            android:exported="false"></service>
+        <provider
+            android:name="com.howbig.riot.persistence.RiotContentProvider"
+            android:authorities="com.howbig.riot.contentprovider" />
     </application>
 
 </manifest>

@@ -5,25 +5,25 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class RiotContentProvider extends ContentProvider {
+    public static final int CHAMPION = 10;
+    private static final int CHAMPION_ID = 20;
+    private static final String AUTHORITY = "com.howbig.riot.contentprovider";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    private static final String BASE_PATH = "riot";
+    private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    static {
+        sURIMatcher.addURI(AUTHORITY, "champion", CHAMPION);
+        sURIMatcher.addURI(AUTHORITY, "champion/#", CHAMPION_ID);
+    }
+
     DBHelper database;
 
     public RiotContentProvider() {
     }
-    private static final int CHAMPION = 10;
-    private static final int CHAMPION_ID = 20;
-    private static final String AUTHORITY = "com.howbig.riot.contentprovider";
-
-    private static final String BASE_PATH = "riot";
-
-    private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-    static {
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH, CHAMPION);
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", CHAMPION_ID);
-    }
-
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
@@ -46,7 +46,7 @@ public class RiotContentProvider extends ContentProvider {
         long id = 0;
         switch (uriType) {
             case CHAMPION:
-                id = sqlDB.insert(DBHelper.TABLE_CHAMPION, null, values);
+                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_CHAMPION, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -64,8 +64,21 @@ public class RiotContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
-        // TODO: Implement this to handle query requests from clients.
-        throw new UnsupportedOperationException("Not yet implemented");
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
+        switch (sURIMatcher.match(uri)) {
+            case CHAMPION:
+                queryBuilder.setTables(DBHelper.TABLE_CHAMPION);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown Query URI " + uri);
+        }
+
+        Cursor cursor = queryBuilder.query(database.getReadableDatabase(), projection, selection,
+                selectionArgs, null, null, sortOrder);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return cursor;
     }
 
     @Override

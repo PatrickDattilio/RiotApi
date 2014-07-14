@@ -1,5 +1,9 @@
 package com.howbig.demo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -7,90 +11,85 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.howbig.riot.api.ApiService;
-import com.howbig.riot.api.BlocksDeserializer;
-import com.howbig.riot.api.ChampionRequestDeserializer;
-import com.howbig.riot.api.DragonService;
-import com.howbig.riot.api.ItemDeserializer;
-import com.howbig.riot.api.ItemJsonDeserializer;
-import com.howbig.riot.api.MasteryDeserializer;
-import com.howbig.riot.api.MasteryJsonDeserializer;
-import com.howbig.riot.api.RuneDeserializer;
-import com.howbig.riot.api.RuneJsonDeserializer;
-import com.howbig.riot.api.SpellDeserializer;
-import com.howbig.riot.api.VarsDeserializer;
-import com.howbig.riot.type.champion.Blocks;
-
+import com.howbig.riot.service.DownloadService;
 import com.howbig.riot.type.champion.Champion;
-import com.howbig.riot.type.champion.ChampionJsonResponse;
-import com.howbig.riot.type.champion.Spell;
-import com.howbig.riot.type.Vars;
-import com.howbig.riot.type.item.Item;
-import com.howbig.riot.type.item.ItemsJsonResponse;
-import com.howbig.riot.type.mastery.Mastery;
-import com.howbig.riot.type.mastery.MasteryJsonResponse;
-import com.howbig.riot.type.rune.Rune;
-import com.howbig.riot.type.rune.RuneJsonResponse;
-
-import retrofit.RestAdapter;
-import retrofit.converter.GsonConverter;
 
 
 public class MainActivity extends ActionBarActivity {
     private static final String API_KEY = "ee58ba39-9b05-4d80-a245-01a33e1fbf0f";
 
+    private BroadcastReceiver receiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
 
-        new AsyncTask<Void, Void, Void>(){
+            }
+        };
+        DownloadService.startVersionsDownload(this);
+        DownloadService.startChampionDownload(this, "Ashe");
+
+
+        new AsyncTask<Void, Void, Void>() {
 
             @Override
             protected Void doInBackground(Void... params) {
-                Gson gson = new GsonBuilder()
+//                Gson gson = new GsonBuilder()
+//
+//                        .registerTypeAdapter(ChampionJsonResponse.class, new ChampionRequestDeserializer())
+//                        .registerTypeAdapter(Spell.class, new SpellDeserializer())
+//                        .registerTypeAdapter(Vars.class, new VarsDeserializer())
+//                        .registerTypeAdapter(Blocks.class, new BlocksDeserializer())
+//                        .registerTypeAdapter(Item.class, new ItemDeserializer())
+//                        .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
+//                        .registerTypeAdapter(Rune.class, new RuneDeserializer())
+//                        .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
+//                        .registerTypeAdapter(Mastery.class, new MasteryDeserializer())
+//                        .registerTypeAdapter(MasteryJsonResponse.class, new MasteryJsonDeserializer())
+//                        .create();
+//
+//                RestAdapter restAdapter = new RestAdapter.Builder()
+//                    .setEndpoint("https://prod.api.pvp.net/api/lol")
+//                    .build();
+//                ApiService service = restAdapter.create(ApiService.class);
+//
+//
+//                String[] versions = service.getVersions(ApiService.API_LANGUAGE, ApiService.API_VERSION,API_KEY);
+//
+//                for(String v: versions)
+//                    Log.d("Test", v);
+//                String version = versions[0];
+//
+//                restAdapter = new RestAdapter.Builder()
+//                        .setEndpoint("http://ddragon.leagueoflegends.com/cdn/" + version)
+//                        .setConverter(new GsonConverter(gson))
+//                        .build();
+//                DragonService dragonService = restAdapter.create(DragonService.class);
+//
+//                ItemsJsonResponse items= dragonService.getItems();
+//                RuneJsonResponse runes= dragonService.getRune();
+//                MasteryJsonResponse masteries=dragonService.getMastery();
+//
+//
+//                ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
+                Cursor query = getContentResolver().query(Champion.CONTENT_URI, null, null, null, null);
+                if (query.moveToFirst()) {
+                    Log.d("CHAMP", query.getString(0));
+                    Log.d("CHAMP", query.getString(1));
+                    Log.d("CHAMP", query.getString(2));
+                    Log.d("CHAMP", query.getString(3));
 
-                        .registerTypeAdapter(ChampionJsonResponse.class, new ChampionRequestDeserializer())
-                        .registerTypeAdapter(Spell.class, new SpellDeserializer())
-                        .registerTypeAdapter(Vars.class, new VarsDeserializer())
-                        .registerTypeAdapter(Blocks.class, new BlocksDeserializer())
-                        .registerTypeAdapter(Item.class, new ItemDeserializer())
-                        .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
-                        .registerTypeAdapter(Rune.class, new RuneDeserializer())
-                        .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
-                        .registerTypeAdapter(Mastery.class, new MasteryDeserializer())
-                        .registerTypeAdapter(MasteryJsonResponse.class, new MasteryJsonDeserializer())
-                        .create();
-
-                RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint("https://prod.api.pvp.net/api/lol")
-                    .build();
-                ApiService service = restAdapter.create(ApiService.class);
-
-
-                String[] versions = service.getVersions(ApiService.API_LANGUAGE, ApiService.API_VERSION,API_KEY);
-
-                for(String v: versions)
-                    Log.d("Test", v);
-                String version = versions[0];
-
-                restAdapter = new RestAdapter.Builder()
-                        .setEndpoint("http://ddragon.leagueoflegends.com/cdn/" + version)
-                        .setConverter(new GsonConverter(gson))
-                        .build();
-                DragonService dragonService = restAdapter.create(DragonService.class);
-
-                ItemsJsonResponse items= dragonService.getItems();
-                RuneJsonResponse runes= dragonService.getRune();
-                MasteryJsonResponse masteries=dragonService.getMastery();
-
-
-                ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
-                Champion ashe = asheResponse.data;
-                String test = ashe.name;
+                    long start = System.nanoTime();
+                    Champion ashe = new Gson().fromJson(query.getString(3), Champion.class);
+                    long end = System.nanoTime();
+                    Log.d("CHAMPTime", "Champion fromJson time:" + (end - start));
+                }
+                String test = "test";
                 return null;
             }
         }.execute();
