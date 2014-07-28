@@ -25,6 +25,8 @@ import com.howbig.riot.type.champion.ChampionJsonResponse;
 import com.howbig.riot.type.champion.Spell;
 import com.howbig.riot.type.item.Item;
 import com.howbig.riot.type.item.ItemsJsonResponse;
+import com.howbig.riot.type.mastery.Mastery;
+import com.howbig.riot.type.mastery.MasteryJsonResponse;
 import com.howbig.riot.type.rune.Rune;
 import com.howbig.riot.type.rune.RuneJsonResponse;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -95,7 +97,7 @@ public class DownloadService extends IntentService {
                 final String url = intent.getStringExtra(CHAMPION_NAME);
                 handleDownloadChampion(url);
             } else if (ACTION_DOWNLOAD_CHAMPION_FULL.equals(action)) {
-                handleDownloadChampionFull();
+                handleDownloadAllChampions();
             }
 //            else if (ACTION_DOWNLOAD_CHAMPION_SQUARE_IMAGE.equals(action)) {
 //                final String url = intent.getStringExtra(CHAMPION_SQUARE_IMAGE);
@@ -142,8 +144,10 @@ public class DownloadService extends IntentService {
         String localVersion = getSharedPreferences("RiotAPI", MODE_PRIVATE).getString("localVersion", "0");
         if (versionCompare(localVersion, version) < 0) {
             //Do full rebuild
-            handleDownloadChampionFull();
+            handleDownloadAllChampions();
             handleDownloadAllItems();
+            handleDownloadAllMasteries();
+
         }
 
     }
@@ -153,9 +157,35 @@ public class DownloadService extends IntentService {
         ItemsJsonResponse itemsJsonResponse = dragonService.getItems();
         Log.d("DownloadService", "Get All Items Time: " + (System.nanoTime() - start) / 1000000);
 
+        long startInsert = System.nanoTime();
         for (Item item : itemsJsonResponse.data) {
-            getContentResolver().insert(Champion.CONTENT_URI, item.getAsContentValues());
+            getContentResolver().insert(Item.CONTENT_URI, item.getAsContentValues());
         }
+        Log.d("DownloadService", "Insert All Items Time: " + (System.nanoTime() - startInsert) / 1000000);
+    }
+
+    private void handleDownloadAllMasteries() {
+        long start = System.nanoTime();
+        MasteryJsonResponse masteryJsonResponse = dragonService.getMastery();
+        Log.d("DownloadService", "Get All Masteries Time: " + (System.nanoTime() - start) / 1000000);
+
+        long startInsert = System.nanoTime();
+        for (Mastery mastery : masteryJsonResponse.data) {
+            getContentResolver().insert(Mastery.CONTENT_URI, mastery.getAsContentValues());
+        }
+        Log.d("DownloadService", "Insert All Masteries Time: " + (System.nanoTime() - startInsert) / 1000000);
+    }
+
+    private void handleDownloadAllChampions() {
+        long start = System.nanoTime();
+        ChampionFullJsonResponse championJsonResponse = dragonService.getChampionFull();
+        Log.d("DownloadService", "Download ChampionFull Time: " + (System.nanoTime() - start) / 1000000);
+
+        long startInsert = System.nanoTime();
+        for (Champion champ : championJsonResponse.data.values()) {
+            getContentResolver().insert(Champion.CONTENT_URI, champ.getAsContentValues());
+        }
+        Log.d("DownloadService", "Insert ChampionFull Time: " + (System.nanoTime() - startInsert) / 1000000);
     }
 
     private void handleDownloadChampion(String championName) {
@@ -175,35 +205,19 @@ public class DownloadService extends IntentService {
 //
 //    }
 
-    private void handleDownloadChampionFull() {
-        long start = System.nanoTime();
-        ChampionFullJsonResponse championJsonResponse = dragonService.getChampionFull();
-        Log.d("DownloadService", "Download ChampionFull Time: " + (System.nanoTime() - start) / 1000000);
-
-        long startInsert = System.nanoTime();
-        for (Champion champ : championJsonResponse.data.values()) {
-            getContentResolver().insert(Champion.CONTENT_URI, champ.getAsContentValues());
-        }
-
-        Log.d("DownloadService", "Insert ChampionFull Time: " + (System.nanoTime() - startInsert) / 1000000);
-
-
-    }
-
 
     /**
      * Compares two version strings.
-     *
+     * <p/>
      * Use this instead of String.compareTo() for a non-lexicographical
      * comparison that works for version strings. e.g. "1.10".compareTo("1.6").
-     *
-     * @note It does not work if "1.10" is supposed to be equal to "1.10.0".
      *
      * @param str1 a string of ordinal numbers separated by decimal points.
      * @param str2 a string of ordinal numbers separated by decimal points.
      * @return The result is a negative integer if str1 is _numerically_ less than str2.
-     *         The result is a positive integer if str1 is _numerically_ greater than str2.
-     *         The result is zero if the strings are _numerically_ equal.
+     * The result is a positive integer if str1 is _numerically_ greater than str2.
+     * The result is zero if the strings are _numerically_ equal.
+     * @note It does not work if "1.10" is supposed to be equal to "1.10.0".
      */
     private Integer versionCompare(String str1, String str2) {
         String[] vals1 = str1.split("\\.");

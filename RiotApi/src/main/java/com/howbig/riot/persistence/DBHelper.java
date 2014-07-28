@@ -12,7 +12,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 //TODO Test speed of saving champion as json string. Probably only need name/id/tags, rest could be pure json.
 public class DBHelper extends SQLiteOpenHelper {
 
-
     //Table Names
     public static final String TABLE_CHAMPION = "champion";
     public static final String TABLE_ITEMS = "items";
@@ -101,8 +100,20 @@ public class DBHelper extends SQLiteOpenHelper {
 //            KEY_ENEMYTIPS + " text not null, " +
             KEY_TAGS + " text not null, " +
             KEY_JSON + " text not null );";
+    public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_RANKS = "ranks";
+    public static final String KEY_PREREQ = "prereq";
+    private static final String DATABASE_CREATE_MASTERIES = "create table "
+            + TABLE_ITEMS + "(" +
+            KEY_ID + " text not null primary key, " +
+            KEY_NAME + " text not null, " +
+            KEY_DESCRIPTION + " text not null, " +
+            KEY_IMAGE + " text not null, " +
+            KEY_RANKS + " text not null, " +
+            KEY_PREREQ + " text not null);";
     private static final int DATBASE_VERSION = 1;
     private static final String DATABASE_NAME = "lol.db";
+
 
     //    public static final String KEY_PARTYPE = "partype";
 //    // Champion Info
@@ -263,7 +274,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE_CHAMPIONS);
         db.execSQL(DATABASE_CREATE_ITEMS);
-
+        db.execSQL(DATABASE_CREATE_MASTERIES);
         //db.execSQL(DATABASE_CREATE_SKINS);
         //db.execSQL(DATABASE_CREATE_SPELLS);
     }

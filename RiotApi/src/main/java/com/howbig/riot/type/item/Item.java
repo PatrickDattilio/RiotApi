@@ -1,9 +1,12 @@
 package com.howbig.riot.type.item;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.net.Uri;
 
 import com.google.gson.Gson;
 import com.howbig.riot.persistence.DBHelper;
+import com.howbig.riot.persistence.RiotContentProvider;
 import com.howbig.riot.type.Gold;
 
 import java.util.Map;
@@ -12,6 +15,12 @@ import java.util.Map;
  * Created by Alex on 5/21/2014.
  */
 public class Item {
+
+    public static final Uri CONTENT_URI =
+            RiotContentProvider.BASE_CONTENT_URI.buildUpon().appendPath("item").build();
+
+    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/item";
+
     public int id;
     public String name;
     public ItemRune itemRune;
