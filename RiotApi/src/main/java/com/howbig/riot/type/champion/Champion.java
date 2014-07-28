@@ -35,25 +35,13 @@ public class Champion {
     public Passive passive;
     public Recommended[] recommended;
 
-
     public ContentValues getAsContentValues() {
-        Gson gson = new Gson();
         ContentValues values = new ContentValues();
         values.put(DBHelper.KEY_ID, id);
         values.put(DBHelper.KEY_NAME, name);
-        values.put(DBHelper.KEY_TITLE, title);
-
-        values.put(DBHelper.KEY_IMAGE_FULL, image.full);
-        values.put(DBHelper.KEY_IMAGE_SPRITE, image.sprite);
-        values.put(DBHelper.KEY_X, image.x);
-        values.put(DBHelper.KEY_Y, image.y);
-        values.put(DBHelper.KEY_W, image.w);
-        values.put(DBHelper.KEY_H, image.h);
-
-        values.put(DBHelper.KEY_SKINS, gson.toJson(skins));
-        values.put(DBHelper.KEY_H, image.h);
-
-
+        values.put(DBHelper.KEY_TAGS, tags[0]);
+        values.put(DBHelper.KEY_IMAGE, image.full);
+        values.put(DBHelper.KEY_JSON, new Gson().toJson(this));
         return values;
     }
 }

@@ -1,5 +1,9 @@
 package com.howbig.riot.type.item;
 
+import android.content.ContentValues;
+
+import com.google.gson.Gson;
+import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.type.Gold;
 
 import java.util.Map;
@@ -29,4 +33,14 @@ public class Item {
     public ItemStats stats;
     public String[] tags;
     public Map<String,Boolean> maps;
+
+    public ContentValues getAsContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.KEY_ID, id);
+        values.put(DBHelper.KEY_NAME, name);
+        values.put(DBHelper.KEY_TAGS, tags.toString());
+        values.put(DBHelper.KEY_IMAGE, image.full);
+        values.put(DBHelper.KEY_JSON, new Gson().toJson(this));
+        return values;
+    }
 }

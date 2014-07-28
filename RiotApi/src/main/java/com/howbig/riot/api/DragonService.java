@@ -1,5 +1,6 @@
 package com.howbig.riot.api;
 
+import com.howbig.riot.type.champion.ChampionFullJsonResponse;
 import com.howbig.riot.type.champion.ChampionJsonResponse;
 import com.howbig.riot.type.item.ItemsJsonResponse;
 import com.howbig.riot.type.mastery.MasteryJsonResponse;
@@ -16,6 +17,9 @@ public interface DragonService {
 
     @GET("/data/en_US/champion/{name}.json")
     ChampionJsonResponse getChampion(@Path("name") String championName);
+
+    @GET("/data/en_US/championFull.json")
+    ChampionFullJsonResponse getChampionFull();
 
     @GET("/data/en_US/item.json")
     ItemsJsonResponse getItems();

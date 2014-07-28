@@ -1,7 +1,6 @@
 package com.howbig.riot.service;
 
 import android.app.IntentService;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -18,43 +17,34 @@ import com.howbig.riot.api.RuneDeserializer;
 import com.howbig.riot.api.RuneJsonDeserializer;
 import com.howbig.riot.api.SpellDeserializer;
 import com.howbig.riot.api.VarsDeserializer;
-import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.type.Vars;
 import com.howbig.riot.type.champion.Blocks;
 import com.howbig.riot.type.champion.Champion;
+import com.howbig.riot.type.champion.ChampionFullJsonResponse;
 import com.howbig.riot.type.champion.ChampionJsonResponse;
 import com.howbig.riot.type.champion.Spell;
 import com.howbig.riot.type.item.Item;
 import com.howbig.riot.type.item.ItemsJsonResponse;
 import com.howbig.riot.type.rune.Rune;
 import com.howbig.riot.type.rune.RuneJsonResponse;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
 public class DownloadService extends IntentService {
 
     private static final String API_KEY = "ee58ba39-9b05-4d80-a245-01a33e1fbf0f";
 
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_FOO = "com.howbig.riot.service.action.FOO";
-    private static final String ACTION_BAZ = "com.howbig.riot.service.action.BAZ";
-
     private static final String ACTION_DOWNLOAD_VERSIONS = "com.howbig.riot.service.action.download.VERSIONS";
     private static final String ACTION_DOWNLOAD_CHAMPION = "com.howbig.riot.service.action.download.CHAMPION";
+    private static final String ACTION_DOWNLOAD_CHAMPION_FULL = "com.howbig.riot.service.action.download.CHAMPIONFULL";
+    private static final String ACTION_DOWNLOAD_CHAMPION_SQUARE_IMAGE = "com.howbig.riot.service.action.download.CHAMPIONSQUAREIMAGE";
     private static final String CHAMPION_NAME = "com.howbig.riot.service.extra.CHAMPION_NAME";
+    private static final String CHAMPION_SQUARE_IMAGE = "com.howbig.riot.service.extra.CHAMPION_SQUARE_IMAGE";
 
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "com.howbig.riot.service.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "com.howbig.riot.service.extra.PARAM2";
     private final ApiService service;
     private DragonService dragonService;
     private RestAdapter restAdapter;
@@ -66,36 +56,7 @@ public class DownloadService extends IntentService {
                 .build();
         service = restAdapter.create(ApiService.class);
 
-    }
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, DownloadService.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, DownloadService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
     }
 
     public static void startVersionsDownload(Context context) {
@@ -111,31 +72,42 @@ public class DownloadService extends IntentService {
         context.startService(intent);
     }
 
+//    public static void startChampionSquareImageDownload(Context context, String championName) {
+//        Intent intent = new Intent(context, DownloadService.class);
+//        intent.setAction(ACTION_DOWNLOAD_CHAMPION);
+//        intent.putExtra(CHAMPION_NAME, championName);
+//        context.startService(intent);
+//    }
+
+    public static void startChampionFullDownload(Context context) {
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.setAction(ACTION_DOWNLOAD_CHAMPION_FULL);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
-            } else if (ACTION_DOWNLOAD_VERSIONS.equals(action)) {
+            if (ACTION_DOWNLOAD_VERSIONS.equals(action)) {
                 handleDownloadVersions();
             } else if (ACTION_DOWNLOAD_CHAMPION.equals(action)) {
                 final String url = intent.getStringExtra(CHAMPION_NAME);
                 handleDownloadChampion(url);
-
+            } else if (ACTION_DOWNLOAD_CHAMPION_FULL.equals(action)) {
+                handleDownloadChampionFull();
             }
+//            else if (ACTION_DOWNLOAD_CHAMPION_SQUARE_IMAGE.equals(action)) {
+//                final String url = intent.getStringExtra(CHAMPION_SQUARE_IMAGE);
+//                handleDownloadChampionSquareImage(url);
+//            }
         }
     }
 
     private void handleDownloadVersions() {
-
+        long start = System.nanoTime();
         String[] versions = service.getVersions(ApiService.API_LANGUAGE, ApiService.API_VERSION, API_KEY);
+        Log.d("DownloadService", "Get Versions Time:" + (System.nanoTime() - start) / 1000000);
 
         for (String v : versions)
             Log.d("Test", v);
@@ -157,36 +129,99 @@ public class DownloadService extends IntentService {
                 .setConverter(new GsonConverter(gson))
                 .build();
         dragonService = restAdapter.create(DragonService.class);
+
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        ImageLoader.getInstance().init(config);
+
+        String localVersion = getSharedPreferences("RiotAPI", MODE_PRIVATE).getString("localVersion", "0");
+        if (versionCompare(localVersion, version) < 0) {
+            //Do full rebuild
+            handleDownloadChampionFull();
+            handleDownloadAllItems();
+        }
+
+    }
+
+    private void handleDownloadAllItems() {
+        long start = System.nanoTime();
+        ItemsJsonResponse itemsJsonResponse = dragonService.getItems();
+        Log.d("DownloadService", "Get All Items Time: " + (System.nanoTime() - start) / 1000000);
+
+        for (Item item : itemsJsonResponse.data) {
+            getContentResolver().insert(Champion.CONTENT_URI, item.getAsContentValues());
+        }
     }
 
     private void handleDownloadChampion(String championName) {
+        long start = System.nanoTime();
         ChampionJsonResponse championJsonResponse = dragonService.getChampion(championName);
+        Log.d("DownloadService", "Get Champion Time: " + championName + " " + (System.nanoTime() - start) / 1000000);
         Champion champ = championJsonResponse.data;
-        ContentValues values = new ContentValues();
-        values.put(DBHelper.KEY_ID, champ.id);
-        values.put(DBHelper.KEY_NAME, champ.name);
-        values.put(DBHelper.KEY_TAGS, champ.tags[0]);
-        values.put(DBHelper.KEY_JSON, new Gson().toJson(champ));
-
-        getContentResolver().insert(Champion.CONTENT_URI, values);
+        getContentResolver().insert(Champion.CONTENT_URI, champ.getAsContentValues());
 
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
+//    private void handleDownloadChampionSquareImage(String imageUrl) {
+//        long start = System.nanoTime();
+//        ImageLoader.getInstance().load;
+//        Log.d("DownloadService", "Get Download Time: " + imageUrl + " " + (System.nanoTime() - start) / 1000000);
+//        ;
+//
+//    }
+
+    private void handleDownloadChampionFull() {
+        long start = System.nanoTime();
+        ChampionFullJsonResponse championJsonResponse = dragonService.getChampionFull();
+        Log.d("DownloadService", "Download ChampionFull Time: " + (System.nanoTime() - start) / 1000000);
+
+        long startInsert = System.nanoTime();
+        for (Champion champ : championJsonResponse.data.values()) {
+            getContentResolver().insert(Champion.CONTENT_URI, champ.getAsContentValues());
+        }
+
+        Log.d("DownloadService", "Insert ChampionFull Time: " + (System.nanoTime() - startInsert) / 1000000);
+
+
     }
 
+
     /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
+     * Compares two version strings.
+     *
+     * Use this instead of String.compareTo() for a non-lexicographical
+     * comparison that works for version strings. e.g. "1.10".compareTo("1.6").
+     *
+     * @note It does not work if "1.10" is supposed to be equal to "1.10.0".
+     *
+     * @param str1 a string of ordinal numbers separated by decimal points.
+     * @param str2 a string of ordinal numbers separated by decimal points.
+     * @return The result is a negative integer if str1 is _numerically_ less than str2.
+     *         The result is a positive integer if str1 is _numerically_ greater than str2.
+     *         The result is zero if the strings are _numerically_ equal.
      */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+    private Integer versionCompare(String str1, String str2) {
+        String[] vals1 = str1.split("\\.");
+        String[] vals2 = str2.split("\\.");
+        int i = 0;
+        // set index to first non-equal ordinal or length of shortest version string
+        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
+            i++;
+        }
+        // compare first non-equal ordinal number
+        if (i < vals1.length && i < vals2.length) {
+            int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
+            return Integer.signum(diff);
+        }
+        // the strings are equal or one string is a substring of the other
+        // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
+        else {
+            return Integer.signum(vals1.length - vals2.length);
+        }
     }
 }

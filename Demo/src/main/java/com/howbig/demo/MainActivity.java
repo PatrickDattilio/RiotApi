@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.gson.Gson;
+import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.service.DownloadService;
 import com.howbig.riot.type.champion.Champion;
 
@@ -32,7 +32,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
         DownloadService.startVersionsDownload(this);
-        DownloadService.startChampionDownload(this, "Ashe");
+        DownloadService.startChampionFullDownload(this);
 
 
         new AsyncTask<Void, Void, Void>() {
@@ -77,18 +77,22 @@ public class MainActivity extends ActionBarActivity {
 //
 //
 //                ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
-                Cursor query = getContentResolver().query(Champion.CONTENT_URI, null, null, null, null);
-                if (query.moveToFirst()) {
-                    Log.d("CHAMP", query.getString(0));
-                    Log.d("CHAMP", query.getString(1));
-                    Log.d("CHAMP", query.getString(2));
-                    Log.d("CHAMP", query.getString(3));
-
-                    long start = System.nanoTime();
-                    Champion ashe = new Gson().fromJson(query.getString(3), Champion.class);
-                    long end = System.nanoTime();
-                    Log.d("CHAMPTime", "Champion fromJson time:" + (end - start));
+                long start = System.nanoTime();
+                Cursor query = getContentResolver().query(Champion.CONTENT_URI, new String[]{DBHelper.KEY_ID, DBHelper.KEY_NAME, DBHelper.KEY_TAGS}, null, null, null);
+                Log.d("MainActivty", "Query time:" + (System.nanoTime() - start) / 1000000);
+                long startParse = System.nanoTime();
+                query.moveToFirst();
+                while (!query.isAfterLast()) {
+                    Champion champ = new Champion();
+                    champ.id = query.getString(0);
+                    champ.name = query.getString(1);
+                    champ.tags = query.getString(2).split(",");
+                    query.moveToNext();
+                    long startImageDownload = System.nanoTime();
+                    // DownloadService.startChampionSquareImageDownload(MainActivity.this,"http://ddragon.leagueoflegends.com/cdn/4.7.8/img/champion/"+champ.image.full);
+                    Log.d("MainActivty", "Download Image:" + (System.nanoTime() - startImageDownload) / 1000000);
                 }
+                Log.d("MainActivty", "Parse json to Champions:" + (System.nanoTime() - startParse) / 1000000);
                 String test = "test";
                 return null;
             }
