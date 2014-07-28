@@ -12,9 +12,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 //TODO Test speed of saving champion as json string. Probably only need name/id/tags, rest could be pure json.
 public class DBHelper extends SQLiteOpenHelper {
 
+
     //Table Names
     public static final String TABLE_CHAMPION = "champion";
-    public static final String TABLE_ITEMS = "items";
+    public static final String TABLE_ITEM = "item";
+    public static final String TABLE_MASTERY = "mastery";
+    public static final String TABLE_RUNE = "rune";
     // Common Keys
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
@@ -85,7 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //            KEY_PASSIVE_H + " integer, " +
             KEY_JSON + " text not null );";
     private static final String DATABASE_CREATE_ITEMS = "create table "
-            + TABLE_ITEMS + "(" +
+            + TABLE_ITEM + "(" +
             KEY_ID + " text not null primary key, " +
             KEY_NAME + " text not null, " +
 //            KEY_TITLE + " text not null, " +
@@ -104,13 +107,22 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String KEY_RANKS = "ranks";
     public static final String KEY_PREREQ = "prereq";
     private static final String DATABASE_CREATE_MASTERIES = "create table "
-            + TABLE_ITEMS + "(" +
+            + TABLE_MASTERY + "(" +
             KEY_ID + " text not null primary key, " +
             KEY_NAME + " text not null, " +
             KEY_DESCRIPTION + " text not null, " +
             KEY_IMAGE + " text not null, " +
             KEY_RANKS + " text not null, " +
-            KEY_PREREQ + " text not null);";
+            KEY_PREREQ + " text not null );";
+    public static final String KEY_TIER = "tier";
+    private static final String DATABASE_CREATE_RUNES = "create table "
+            + TABLE_RUNE + "(" +
+            KEY_ID + " text not null primary key, " +
+            KEY_NAME + " text not null, " +
+            KEY_TAGS + " text not null, " +
+            KEY_IMAGE + " text not null, " +
+            KEY_TIER + " text not null, " +
+            KEY_JSON + " text not null );";
     private static final int DATBASE_VERSION = 1;
     private static final String DATABASE_NAME = "lol.db";
 
@@ -275,6 +287,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DATABASE_CREATE_CHAMPIONS);
         db.execSQL(DATABASE_CREATE_ITEMS);
         db.execSQL(DATABASE_CREATE_MASTERIES);
+        db.execSQL(DATABASE_CREATE_RUNES);
         //db.execSQL(DATABASE_CREATE_SKINS);
         //db.execSQL(DATABASE_CREATE_SPELLS);
     }

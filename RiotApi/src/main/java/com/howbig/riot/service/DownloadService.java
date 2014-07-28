@@ -188,6 +188,18 @@ public class DownloadService extends IntentService {
         Log.d("DownloadService", "Insert ChampionFull Time: " + (System.nanoTime() - startInsert) / 1000000);
     }
 
+    private void handleDownloadAllRunes() {
+        long start = System.nanoTime();
+        RuneJsonResponse runeJsonResponse = dragonService.getRune();
+        Log.d("DownloadService", "Download All Runes Time: " + (System.nanoTime() - start) / 1000000);
+
+        long startInsert = System.nanoTime();
+        for (Rune rune : runeJsonResponse.data) {
+            getContentResolver().insert(Rune.CONTENT_URI, rune.getAsContentValues());
+        }
+        Log.d("DownloadService", "Insert All Runes Time: " + (System.nanoTime() - startInsert) / 1000000);
+    }
+
     private void handleDownloadChampion(String championName) {
         long start = System.nanoTime();
         ChampionJsonResponse championJsonResponse = dragonService.getChampion(championName);
