@@ -42,7 +42,7 @@ public class SpellDeserializer implements JsonDeserializer<Spell> {
         spell.vars = context.deserialize(obj.get("vars"), new TypeToken<Vars[]>() {
         }.getType());
         spell.costType = obj.get("costType").getAsString();
-        if (obj.get("range").isJsonArray()) {
+        if (obj.get("range") != null && obj.get("range").isJsonArray()) {
             spell.range = (int[]) context.deserialize(obj.get("range"), new TypeToken<int[]>() {
             }.getType());
         } else {

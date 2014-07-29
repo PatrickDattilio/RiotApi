@@ -38,7 +38,6 @@ public class RiotContentProvider extends ContentProvider {
     }
 
     DBHelper database;
-
     public RiotContentProvider() {
     }
 
@@ -61,26 +60,7 @@ public class RiotContentProvider extends ContentProvider {
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsDeleted = 0;
         long id = 0;
-        switch (uriType) {
-            case CHAMPION:
-                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_CHAMPION, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-                break;
-            case ITEM:
-                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_ITEM, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-                break;
-            case MASTERY:
-                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_MASTERY, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-                break;
-            case RUNE:
-                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_RUNE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-                break;
-            case SUMMONER:
-                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_SUMMONER, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
-        }
-
+        id = sqlDB.insertWithOnConflict(getTable(uriType), null, values, SQLiteDatabase.CONFLICT_REPLACE);
         getContext().getContentResolver().notifyChange(uri, null);
         return Uri.parse(BASE_PATH + "/" + id);
     }
@@ -95,14 +75,7 @@ public class RiotContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-
-        switch (sURIMatcher.match(uri)) {
-            case CHAMPION:
-                queryBuilder.setTables(DBHelper.TABLE_CHAMPION);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown Query URI " + uri);
-        }
+        queryBuilder.setTables(getTable(sURIMatcher.match(uri)));
 
         Cursor cursor = queryBuilder.query(database.getReadableDatabase(), projection, selection,
                 selectionArgs, null, null, sortOrder);
@@ -117,4 +90,30 @@ public class RiotContentProvider extends ContentProvider {
         // TODO: Implement this to handle requests to update one or more rows.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
+
+    private String getTable(int uri) throws IllegalArgumentException {
+        String table = null;
+        switch (uri) {
+            case CHAMPION:
+                table = DBHelper.TABLE_CHAMPION;
+                break;
+            case ITEM:
+                table = DBHelper.TABLE_ITEM;
+                break;
+            case MASTERY:
+                table = DBHelper.TABLE_MASTERY;
+                break;
+            case RUNE:
+                table = DBHelper.TABLE_RUNE;
+                break;
+            case SUMMONER:
+                table = DBHelper.TABLE_SUMMONER;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        return table;
+    }
+
 }

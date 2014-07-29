@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.howbig.riot.R;
 import com.howbig.riot.api.ApiService;
 import com.howbig.riot.api.DragonService;
 import com.howbig.riot.api.deserializers.BlocksDeserializer;
@@ -36,9 +35,6 @@ import com.howbig.riot.type.rune.Rune;
 import com.howbig.riot.type.rune.RuneJsonResponse;
 import com.howbig.riot.type.summoner.Summoner;
 import com.howbig.riot.type.summoner.SummonerJsonResponse;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
@@ -46,6 +42,7 @@ import retrofit.converter.GsonConverter;
 public class DownloadService extends IntentService {
 
     private static final String API_KEY = "ee58ba39-9b05-4d80-a245-01a33e1fbf0f";
+    private static final String API_URL = "https://global.api.pvp.net/api/lol";
 
     private static final String ACTION_DOWNLOAD_VERSIONS = "com.howbig.riot.service.action.download.VERSIONS";
     private static final String ACTION_DOWNLOAD_CHAMPION = "com.howbig.riot.service.action.download.CHAMPION";
@@ -59,7 +56,7 @@ public class DownloadService extends IntentService {
     public DownloadService() {
         super("DownloadService");
         mRestAdapter = new RestAdapter.Builder()
-                .setEndpoint(getString(R.string.riot_api_production_url))
+                .setEndpoint(API_URL)
                 .build();
         mApiService = mRestAdapter.create(ApiService.class);
     }
@@ -115,9 +112,10 @@ public class DownloadService extends IntentService {
     }
 
     /**
-     *
+     * Retrieves the list of versions from the API, compares to our version and if a newer version exists, redownloads/populates the database.
      */
     private void handleDownloadVersions() {
+
         long start = System.nanoTime();
         String[] versions = mApiService.getVersions(ApiService.API_LANGUAGE, ApiService.API_VERSION, API_KEY);
         Log.d("DownloadService", "Get Versions Time:" + (System.nanoTime() - start) / 1000000);
@@ -147,24 +145,15 @@ public class DownloadService extends IntentService {
                 .build();
         mDragonService = mRestAdapter.create(DragonService.class);
 
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader.getInstance().init(config);
 
         String localVersion = getSharedPreferences("RiotAPI", MODE_PRIVATE).getString("localVersion", "0");
+        //If newer version exists, do a full download/insert of database.
         if (versionCompare(localVersion, version) < 0) {
-            //Do full download/insert of database.
             handleDownloadAllChampions();
             handleDownloadAllItems();
             handleDownloadAllMasteries();
             handleDownloadAllRunes();
             handleDownloadAllSummoners();
-
         }
 
     }

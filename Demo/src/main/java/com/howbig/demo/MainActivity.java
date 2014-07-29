@@ -4,16 +4,49 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.howbig.riot.api.deserializers.BlocksDeserializer;
+import com.howbig.riot.api.deserializers.ChampionRequestDeserializer;
+import com.howbig.riot.api.deserializers.ItemDeserializer;
+import com.howbig.riot.api.deserializers.ItemJsonDeserializer;
+import com.howbig.riot.api.deserializers.MasteryDeserializer;
+import com.howbig.riot.api.deserializers.MasteryJsonDeserializer;
+import com.howbig.riot.api.deserializers.RuneDeserializer;
+import com.howbig.riot.api.deserializers.RuneJsonDeserializer;
+import com.howbig.riot.api.deserializers.SpellDeserializer;
+import com.howbig.riot.api.deserializers.SummonerDeserializer;
+import com.howbig.riot.api.deserializers.SummonerJsonDeserializer;
+import com.howbig.riot.api.deserializers.VarsDeserializer;
 import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.service.DownloadService;
+import com.howbig.riot.type.Vars;
+import com.howbig.riot.type.champion.Blocks;
 import com.howbig.riot.type.champion.Champion;
+import com.howbig.riot.type.champion.ChampionJsonResponse;
+import com.howbig.riot.type.champion.Spell;
+import com.howbig.riot.type.item.Item;
+import com.howbig.riot.type.item.ItemsJsonResponse;
+import com.howbig.riot.type.mastery.Mastery;
+import com.howbig.riot.type.mastery.MasteryJsonResponse;
+import com.howbig.riot.type.rune.Rune;
+import com.howbig.riot.type.rune.RuneJsonResponse;
+import com.howbig.riot.type.summoner.Summoner;
+import com.howbig.riot.type.summoner.SummonerJsonResponse;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -39,61 +72,65 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             protected Void doInBackground(Void... params) {
-//                Gson gson = new GsonBuilder()
-//
-//                        .registerTypeAdapter(ChampionJsonResponse.class, new ChampionRequestDeserializer())
-//                        .registerTypeAdapter(Spell.class, new SpellDeserializer())
-//                        .registerTypeAdapter(Vars.class, new VarsDeserializer())
-//                        .registerTypeAdapter(Blocks.class, new BlocksDeserializer())
-//                        .registerTypeAdapter(Item.class, new ItemDeserializer())
-//                        .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
-//                        .registerTypeAdapter(Rune.class, new RuneDeserializer())
-//                        .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
-//                        .registerTypeAdapter(Mastery.class, new MasteryDeserializer())
-//                        .registerTypeAdapter(MasteryJsonResponse.class, new MasteryJsonDeserializer())
-//                        .create();
-//
-//                RestAdapter restAdapter = new RestAdapter.Builder()
-//                    .setEndpoint("https://prod.api.pvp.net/api/lol")
-//                    .build();
-//                ApiService service = restAdapter.create(ApiService.class);
-//
-//
-//                String[] versions = service.getVersions(ApiService.API_LANGUAGE, ApiService.API_VERSION,API_KEY);
-//
-//                for(String v: versions)
-//                    Log.d("Test", v);
-//                String version = versions[0];
-//
-//                restAdapter = new RestAdapter.Builder()
-//                        .setEndpoint("http://ddragon.leagueoflegends.com/cdn/" + version)
-//                        .setConverter(new GsonConverter(gson))
-//                        .build();
-//                DragonService dragonService = restAdapter.create(DragonService.class);
-//
-//                ItemsJsonResponse items= dragonService.getItems();
-//                RuneJsonResponse runes= dragonService.getRune();
-//                MasteryJsonResponse masteries=dragonService.getMastery();
-//
-//
-//                ChampionJsonResponse asheResponse = dragonService.getChampion("Ashe");
                 long start = System.nanoTime();
-                Cursor query = getContentResolver().query(Champion.CONTENT_URI, new String[]{DBHelper.KEY_ID, DBHelper.KEY_NAME, DBHelper.KEY_TAGS}, null, null, null);
+                Cursor cursor = getContentResolver().query(Champion.CONTENT_URI, new String[]{DBHelper.KEY_JSON}, null, null, null);
                 Log.d("MainActivty", "Query time:" + (System.nanoTime() - start) / 1000000);
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(ChampionJsonResponse.class, new ChampionRequestDeserializer())
+                        .registerTypeAdapter(Spell.class, new SpellDeserializer())
+                        .registerTypeAdapter(Vars.class, new VarsDeserializer())
+                        .registerTypeAdapter(Blocks.class, new BlocksDeserializer())
+                        .registerTypeAdapter(Item.class, new ItemDeserializer())
+                        .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
+                        .registerTypeAdapter(Rune.class, new RuneDeserializer())
+                        .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
+                        .registerTypeAdapter(Mastery.class, new MasteryDeserializer())
+                        .registerTypeAdapter(MasteryJsonResponse.class, new MasteryJsonDeserializer())
+                        .registerTypeAdapter(Summoner.class, new SummonerDeserializer())
+                        .registerTypeAdapter(SummonerJsonResponse.class, new SummonerJsonDeserializer())
+                        .create();
                 long startParse = System.nanoTime();
-                query.moveToFirst();
-                while (!query.isAfterLast()) {
-                    Champion champ = new Champion();
-                    champ.id = query.getString(0);
-                    champ.name = query.getString(1);
-                    champ.tags = query.getString(2).split(",");
-                    query.moveToNext();
+                cursor.moveToFirst();
+                DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                        .cacheInMemory(true)
+                        .cacheOnDisk(true)
+                        .build();
+                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                        .defaultDisplayImageOptions(defaultOptions)
+                        .build();
+                ImageLoader.getInstance().init(config);
+                ImageLoader loader = ImageLoader.getInstance();
+                while (!cursor.isAfterLast()) {
+                    Champion champ = gson.fromJson(cursor.getString(0), Champion.class);
+                    cursor.moveToNext();
                     long startImageDownload = System.nanoTime();
+
+                    loader.loadImage("http://ddragon.leagueoflegends.com/cdn/4.7.8/img/champion/" + champ.image.full, new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+                    });
                     // DownloadService.startChampionSquareImageDownload(MainActivity.this,"http://ddragon.leagueoflegends.com/cdn/4.7.8/img/champion/"+champ.image.full);
                     Log.d("MainActivty", "Download Image:" + (System.nanoTime() - startImageDownload) / 1000000);
                 }
+                cursor.close();
                 Log.d("MainActivty", "Parse json to Champions:" + (System.nanoTime() - startParse) / 1000000);
-                String test = "test";
                 return null;
             }
         }.execute();
