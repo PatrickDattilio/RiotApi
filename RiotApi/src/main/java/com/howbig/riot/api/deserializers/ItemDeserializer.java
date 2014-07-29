@@ -1,4 +1,4 @@
-package com.howbig.riot.api;
+package com.howbig.riot.api.deserializers;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.howbig.riot.type.Gold;
 import com.howbig.riot.type.item.Item;
+import com.howbig.riot.type.item.ItemImage;
 import com.howbig.riot.type.item.ItemRune;
 import com.howbig.riot.type.item.ItemStats;
 
@@ -38,6 +39,8 @@ public class ItemDeserializer implements JsonDeserializer<Item> {
         if (!obj.get("plaintext").isJsonNull()) {
             item.plaintext = obj.get("plaintext").getAsString();
         }
+        item.image = context.deserialize(obj.get("image"), new TypeToken<ItemImage>() {
+        }.getType());
         if (obj.has("consumed"))
             item.consumed = obj.get("consumed").getAsBoolean();
         if (obj.has("stacks"))

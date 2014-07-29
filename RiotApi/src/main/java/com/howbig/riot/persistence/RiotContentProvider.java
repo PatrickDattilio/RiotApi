@@ -10,7 +10,16 @@ import android.net.Uri;
 
 public class RiotContentProvider extends ContentProvider {
     public static final int CHAMPION = 10;
+    public static final int ITEM = 30;
+    public static final int MASTERY = 50;
+    public static final int RUNE = 70;
+    public static final int SUMMONER = 90;
     private static final int CHAMPION_ID = 20;
+    private static final int ITEM_ID = 40;
+    private static final int MASTERY_ID = 60;
+    private static final int RUNE_ID = 80;
+    private static final int SUMMONER_ID = 100;
+
     private static final String AUTHORITY = "com.howbig.riot.contentprovider";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     private static final String BASE_PATH = "riot";
@@ -18,6 +27,14 @@ public class RiotContentProvider extends ContentProvider {
     static {
         sURIMatcher.addURI(AUTHORITY, "champion", CHAMPION);
         sURIMatcher.addURI(AUTHORITY, "champion/#", CHAMPION_ID);
+        sURIMatcher.addURI(AUTHORITY, "item", ITEM);
+        sURIMatcher.addURI(AUTHORITY, "item/#", ITEM_ID);
+        sURIMatcher.addURI(AUTHORITY, "mastery", MASTERY);
+        sURIMatcher.addURI(AUTHORITY, "mastery/#", MASTERY_ID);
+        sURIMatcher.addURI(AUTHORITY, "rune", RUNE);
+        sURIMatcher.addURI(AUTHORITY, "rune/#", RUNE_ID);
+        sURIMatcher.addURI(AUTHORITY, "summoner", SUMMONER);
+        sURIMatcher.addURI(AUTHORITY, "summoner/#", SUMMONER_ID);
     }
 
     DBHelper database;
@@ -48,9 +65,22 @@ public class RiotContentProvider extends ContentProvider {
             case CHAMPION:
                 id = sqlDB.insertWithOnConflict(DBHelper.TABLE_CHAMPION, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 break;
+            case ITEM:
+                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_ITEM, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case MASTERY:
+                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_MASTERY, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case RUNE:
+                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_RUNE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case SUMMONER:
+                id = sqlDB.insertWithOnConflict(DBHelper.TABLE_SUMMONER, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
+
         getContext().getContentResolver().notifyChange(uri, null);
         return Uri.parse(BASE_PATH + "/" + id);
     }

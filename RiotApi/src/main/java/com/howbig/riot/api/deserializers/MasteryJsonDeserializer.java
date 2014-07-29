@@ -1,4 +1,4 @@
-package com.howbig.riot.api;
+package com.howbig.riot.api.deserializers;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

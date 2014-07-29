@@ -1,4 +1,4 @@
-package com.howbig.riot.api;
+package com.howbig.riot.api.deserializers;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -6,10 +6,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.howbig.riot.type.Vars;
 import com.howbig.riot.type.champion.Image;
 import com.howbig.riot.type.champion.LevelTip;
 import com.howbig.riot.type.champion.Spell;
-import com.howbig.riot.type.Vars;
 
 /**
  * Created by Patrick Dattilio on 5/18/2014.
@@ -18,7 +18,7 @@ public class SpellDeserializer implements JsonDeserializer<Spell> {
 
     @Override
     public Spell deserialize(JsonElement json, java.lang.reflect.Type type,
-            JsonDeserializationContext context) throws JsonParseException {
+                             JsonDeserializationContext context) throws JsonParseException {
         JsonObject obj = (JsonObject) json;
         Spell spell = new Spell();
 

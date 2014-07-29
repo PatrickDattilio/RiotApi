@@ -7,16 +7,21 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.howbig.riot.R;
 import com.howbig.riot.api.ApiService;
-import com.howbig.riot.api.BlocksDeserializer;
-import com.howbig.riot.api.ChampionRequestDeserializer;
 import com.howbig.riot.api.DragonService;
-import com.howbig.riot.api.ItemDeserializer;
-import com.howbig.riot.api.ItemJsonDeserializer;
-import com.howbig.riot.api.RuneDeserializer;
-import com.howbig.riot.api.RuneJsonDeserializer;
-import com.howbig.riot.api.SpellDeserializer;
-import com.howbig.riot.api.VarsDeserializer;
+import com.howbig.riot.api.deserializers.BlocksDeserializer;
+import com.howbig.riot.api.deserializers.ChampionRequestDeserializer;
+import com.howbig.riot.api.deserializers.ItemDeserializer;
+import com.howbig.riot.api.deserializers.ItemJsonDeserializer;
+import com.howbig.riot.api.deserializers.MasteryDeserializer;
+import com.howbig.riot.api.deserializers.MasteryJsonDeserializer;
+import com.howbig.riot.api.deserializers.RuneDeserializer;
+import com.howbig.riot.api.deserializers.RuneJsonDeserializer;
+import com.howbig.riot.api.deserializers.SpellDeserializer;
+import com.howbig.riot.api.deserializers.SummonerDeserializer;
+import com.howbig.riot.api.deserializers.SummonerJsonDeserializer;
+import com.howbig.riot.api.deserializers.VarsDeserializer;
 import com.howbig.riot.type.Vars;
 import com.howbig.riot.type.champion.Blocks;
 import com.howbig.riot.type.champion.Champion;
@@ -29,6 +34,8 @@ import com.howbig.riot.type.mastery.Mastery;
 import com.howbig.riot.type.mastery.MasteryJsonResponse;
 import com.howbig.riot.type.rune.Rune;
 import com.howbig.riot.type.rune.RuneJsonResponse;
+import com.howbig.riot.type.summoner.Summoner;
+import com.howbig.riot.type.summoner.SummonerJsonResponse;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -42,31 +49,38 @@ public class DownloadService extends IntentService {
 
     private static final String ACTION_DOWNLOAD_VERSIONS = "com.howbig.riot.service.action.download.VERSIONS";
     private static final String ACTION_DOWNLOAD_CHAMPION = "com.howbig.riot.service.action.download.CHAMPION";
-    private static final String ACTION_DOWNLOAD_CHAMPION_FULL = "com.howbig.riot.service.action.download.CHAMPIONFULL";
-    private static final String ACTION_DOWNLOAD_CHAMPION_SQUARE_IMAGE = "com.howbig.riot.service.action.download.CHAMPIONSQUAREIMAGE";
+    private static final String ACTION_DOWNLOAD_CHAMPION_FULL = "com.howbig.riot.service.action.download.ALLCHAMPION";
     private static final String CHAMPION_NAME = "com.howbig.riot.service.extra.CHAMPION_NAME";
-    private static final String CHAMPION_SQUARE_IMAGE = "com.howbig.riot.service.extra.CHAMPION_SQUARE_IMAGE";
 
-    private final ApiService service;
-    private DragonService dragonService;
-    private RestAdapter restAdapter;
+    private final ApiService mApiService;
+    private DragonService mDragonService;
+    private RestAdapter mRestAdapter;
 
     public DownloadService() {
         super("DownloadService");
-        restAdapter = new RestAdapter.Builder()
-                .setEndpoint("https://prod.api.pvp.net/api/lol")
+        mRestAdapter = new RestAdapter.Builder()
+                .setEndpoint(getString(R.string.riot_api_production_url))
                 .build();
-        service = restAdapter.create(ApiService.class);
-
-
+        mApiService = mRestAdapter.create(ApiService.class);
     }
 
+    /**
+     * Creates a new ACTION_DOWNLOAD_VERSIONS intent, using it to start the service.
+     *
+     * @param context Context used to create the intent and start the service.
+     */
     public static void startVersionsDownload(Context context) {
         Intent intent = new Intent(context, DownloadService.class);
         intent.setAction(ACTION_DOWNLOAD_VERSIONS);
         context.startService(intent);
     }
 
+    /**
+     * Creates a new ACTION_DOWNLOAD_CHAMPION intent, using it to start the service.
+     *
+     * @param context      Context used to create the intent and start the service.
+     * @param championName Name of the specific champion we want to download.
+     */
     public static void startChampionDownload(Context context, String championName) {
         Intent intent = new Intent(context, DownloadService.class);
         intent.setAction(ACTION_DOWNLOAD_CHAMPION);
@@ -74,13 +88,11 @@ public class DownloadService extends IntentService {
         context.startService(intent);
     }
 
-//    public static void startChampionSquareImageDownload(Context context, String championName) {
-//        Intent intent = new Intent(context, DownloadService.class);
-//        intent.setAction(ACTION_DOWNLOAD_CHAMPION);
-//        intent.putExtra(CHAMPION_NAME, championName);
-//        context.startService(intent);
-//    }
-
+    /**
+     * Creates a new ACTION_DOWNLOAD_CHAMPION_FULL intent, using it to start the service.
+     *
+     * @param context Context used to create the intent and start the service.
+     */
     public static void startChampionFullDownload(Context context) {
         Intent intent = new Intent(context, DownloadService.class);
         intent.setAction(ACTION_DOWNLOAD_CHAMPION_FULL);
@@ -99,16 +111,15 @@ public class DownloadService extends IntentService {
             } else if (ACTION_DOWNLOAD_CHAMPION_FULL.equals(action)) {
                 handleDownloadAllChampions();
             }
-//            else if (ACTION_DOWNLOAD_CHAMPION_SQUARE_IMAGE.equals(action)) {
-//                final String url = intent.getStringExtra(CHAMPION_SQUARE_IMAGE);
-//                handleDownloadChampionSquareImage(url);
-//            }
         }
     }
 
+    /**
+     *
+     */
     private void handleDownloadVersions() {
         long start = System.nanoTime();
-        String[] versions = service.getVersions(ApiService.API_LANGUAGE, ApiService.API_VERSION, API_KEY);
+        String[] versions = mApiService.getVersions(ApiService.API_LANGUAGE, ApiService.API_VERSION, API_KEY);
         Log.d("DownloadService", "Get Versions Time:" + (System.nanoTime() - start) / 1000000);
 
         for (String v : versions)
@@ -125,12 +136,16 @@ public class DownloadService extends IntentService {
                 .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
                 .registerTypeAdapter(Rune.class, new RuneDeserializer())
                 .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
+                .registerTypeAdapter(Mastery.class, new MasteryDeserializer())
+                .registerTypeAdapter(MasteryJsonResponse.class, new MasteryJsonDeserializer())
+                .registerTypeAdapter(Summoner.class, new SummonerDeserializer())
+                .registerTypeAdapter(SummonerJsonResponse.class, new SummonerJsonDeserializer())
                 .create();
-        restAdapter = new RestAdapter.Builder()
+        mRestAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://ddragon.leagueoflegends.com/cdn/" + version)
                 .setConverter(new GsonConverter(gson))
                 .build();
-        dragonService = restAdapter.create(DragonService.class);
+        mDragonService = mRestAdapter.create(DragonService.class);
 
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
@@ -143,18 +158,24 @@ public class DownloadService extends IntentService {
 
         String localVersion = getSharedPreferences("RiotAPI", MODE_PRIVATE).getString("localVersion", "0");
         if (versionCompare(localVersion, version) < 0) {
-            //Do full rebuild
+            //Do full download/insert of database.
             handleDownloadAllChampions();
             handleDownloadAllItems();
             handleDownloadAllMasteries();
+            handleDownloadAllRunes();
+            handleDownloadAllSummoners();
 
         }
 
     }
 
+    /**
+     * Downloads the item.json file with a DragonService into an ItemsJsonResponse. Then loops through
+     * the items in the response and inserts each into the ContentProvider.
+     */
     private void handleDownloadAllItems() {
         long start = System.nanoTime();
-        ItemsJsonResponse itemsJsonResponse = dragonService.getItems();
+        ItemsJsonResponse itemsJsonResponse = mDragonService.getItems();
         Log.d("DownloadService", "Get All Items Time: " + (System.nanoTime() - start) / 1000000);
 
         long startInsert = System.nanoTime();
@@ -164,9 +185,13 @@ public class DownloadService extends IntentService {
         Log.d("DownloadService", "Insert All Items Time: " + (System.nanoTime() - startInsert) / 1000000);
     }
 
+    /**
+     * Downloads the mastery.json file with a DragonService into an MasteryJsonResponse. Then loops through
+     * the masteries in the response and inserts each into the ContentProvider.
+     */
     private void handleDownloadAllMasteries() {
         long start = System.nanoTime();
-        MasteryJsonResponse masteryJsonResponse = dragonService.getMastery();
+        MasteryJsonResponse masteryJsonResponse = mDragonService.getMastery();
         Log.d("DownloadService", "Get All Masteries Time: " + (System.nanoTime() - start) / 1000000);
 
         long startInsert = System.nanoTime();
@@ -176,21 +201,29 @@ public class DownloadService extends IntentService {
         Log.d("DownloadService", "Insert All Masteries Time: " + (System.nanoTime() - startInsert) / 1000000);
     }
 
+    /**
+     * Downloads the championFull.json file with a DragonService into an ChampionFullJsonResponse. Then loops through
+     * the champions in the response and inserts each into the ContentProvider.
+     */
     private void handleDownloadAllChampions() {
         long start = System.nanoTime();
-        ChampionFullJsonResponse championJsonResponse = dragonService.getChampionFull();
-        Log.d("DownloadService", "Download ChampionFull Time: " + (System.nanoTime() - start) / 1000000);
+        ChampionFullJsonResponse championJsonResponse = mDragonService.getChampionFull();
+        Log.d("DownloadService", "Download All Champion Time: " + (System.nanoTime() - start) / 1000000);
 
         long startInsert = System.nanoTime();
         for (Champion champ : championJsonResponse.data.values()) {
             getContentResolver().insert(Champion.CONTENT_URI, champ.getAsContentValues());
         }
-        Log.d("DownloadService", "Insert ChampionFull Time: " + (System.nanoTime() - startInsert) / 1000000);
+        Log.d("DownloadService", "Insert All Champion Time: " + (System.nanoTime() - startInsert) / 1000000);
     }
 
+    /**
+     * Downloads the rune.json file with a DragonService into an RuneJsonResponse. Then loops through
+     * the runes in the response and inserts each into the ContentProvider.
+     */
     private void handleDownloadAllRunes() {
         long start = System.nanoTime();
-        RuneJsonResponse runeJsonResponse = dragonService.getRune();
+        RuneJsonResponse runeJsonResponse = mDragonService.getRune();
         Log.d("DownloadService", "Download All Runes Time: " + (System.nanoTime() - start) / 1000000);
 
         long startInsert = System.nanoTime();
@@ -200,23 +233,34 @@ public class DownloadService extends IntentService {
         Log.d("DownloadService", "Insert All Runes Time: " + (System.nanoTime() - startInsert) / 1000000);
     }
 
+    /**
+     * Downloads the summoner.json file with a DragonService into an SummonerJsonResponse. Then loops through
+     * the summoner's spells in the response and inserts each into the ContentProvider.
+     */
+    private void handleDownloadAllSummoners() {
+        long start = System.nanoTime();
+        SummonerJsonResponse summonerJsonResponse = mDragonService.getSummoner();
+        Log.d("DownloadService", "Download All Summoner's Spells Time: " + (System.nanoTime() - start) / 1000000);
+
+        long startInsert = System.nanoTime();
+        for (Summoner summoner : summonerJsonResponse.data) {
+            getContentResolver().insert(Summoner.CONTENT_URI, summoner.getAsContentValues());
+        }
+        Log.d("DownloadService", "Insert All Summoner's Spells Time: " + (System.nanoTime() - startInsert) / 1000000);
+    }
+
+    /**
+     * Downloads the <championName>.json file with a DragonService into an ChampionJsonResponse. Then
+     * inserts the champion from the response into the ContentProvider.
+     */
     private void handleDownloadChampion(String championName) {
         long start = System.nanoTime();
-        ChampionJsonResponse championJsonResponse = dragonService.getChampion(championName);
+        ChampionJsonResponse championJsonResponse = mDragonService.getChampion(championName);
         Log.d("DownloadService", "Get Champion Time: " + championName + " " + (System.nanoTime() - start) / 1000000);
         Champion champ = championJsonResponse.data;
         getContentResolver().insert(Champion.CONTENT_URI, champ.getAsContentValues());
 
     }
-
-//    private void handleDownloadChampionSquareImage(String imageUrl) {
-//        long start = System.nanoTime();
-//        ImageLoader.getInstance().load;
-//        Log.d("DownloadService", "Get Download Time: " + imageUrl + " " + (System.nanoTime() - start) / 1000000);
-//        ;
-//
-//    }
-
 
     /**
      * Compares two version strings.

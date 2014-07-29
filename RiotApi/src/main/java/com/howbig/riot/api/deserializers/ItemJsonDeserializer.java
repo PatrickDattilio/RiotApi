@@ -1,4 +1,4 @@
-package com.howbig.riot.api;
+package com.howbig.riot.api.deserializers;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -6,8 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.howbig.riot.type.item.ItemGroup;
 import com.howbig.riot.type.item.Item;
+import com.howbig.riot.type.item.ItemGroup;
 import com.howbig.riot.type.item.ItemTree;
 import com.howbig.riot.type.item.ItemsJsonResponse;
 
