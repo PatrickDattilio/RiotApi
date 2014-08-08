@@ -17,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_RUNE = "rune";
     public static final String TABLE_SUMMONER = "summoner";
     // Common Keys
-    public static final String KEY_ID = "id";
+    public static final String KEY_ID = "_id";
     public static final String KEY_NAME = "name";
     public static final String KEY_JSON = "json";
     public static final String KEY_IMAGE = "image";

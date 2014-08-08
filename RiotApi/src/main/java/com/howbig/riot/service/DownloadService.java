@@ -3,6 +3,7 @@ package com.howbig.riot.service;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -48,7 +49,7 @@ public class DownloadService extends IntentService {
     private static final String ACTION_DOWNLOAD_CHAMPION = "com.howbig.riot.service.action.download.CHAMPION";
     private static final String ACTION_DOWNLOAD_CHAMPION_FULL = "com.howbig.riot.service.action.download.ALLCHAMPION";
     private static final String CHAMPION_NAME = "com.howbig.riot.service.extra.CHAMPION_NAME";
-
+    public static Gson gson;
     private final ApiService mApiService;
     private DragonService mDragonService;
     private RestAdapter mRestAdapter;
@@ -59,6 +60,21 @@ public class DownloadService extends IntentService {
                 .setEndpoint(API_URL)
                 .build();
         mApiService = mRestAdapter.create(ApiService.class);
+
+        gson = new GsonBuilder()
+                .registerTypeAdapter(ChampionJsonResponse.class, new ChampionRequestDeserializer())
+                .registerTypeAdapter(Spell.class, new SpellDeserializer())
+                .registerTypeAdapter(Vars.class, new VarsDeserializer())
+                .registerTypeAdapter(Blocks.class, new BlocksDeserializer())
+                .registerTypeAdapter(Item.class, new ItemDeserializer())
+                .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
+                .registerTypeAdapter(Rune.class, new RuneDeserializer())
+                .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
+                .registerTypeAdapter(Mastery.class, new MasteryDeserializer())
+                .registerTypeAdapter(MasteryJsonResponse.class, new MasteryJsonDeserializer())
+                .registerTypeAdapter(Summoner.class, new SummonerDeserializer())
+                .registerTypeAdapter(SummonerJsonResponse.class, new SummonerJsonDeserializer())
+                .create();
     }
 
     /**
@@ -124,21 +140,7 @@ public class DownloadService extends IntentService {
             Log.d("Test", v);
         String version = versions[0];
 
-        Gson gson = new GsonBuilder()
 
-                .registerTypeAdapter(ChampionJsonResponse.class, new ChampionRequestDeserializer())
-                .registerTypeAdapter(Spell.class, new SpellDeserializer())
-                .registerTypeAdapter(Vars.class, new VarsDeserializer())
-                .registerTypeAdapter(Blocks.class, new BlocksDeserializer())
-                .registerTypeAdapter(Item.class, new ItemDeserializer())
-                .registerTypeAdapter(ItemsJsonResponse.class, new ItemJsonDeserializer())
-                .registerTypeAdapter(Rune.class, new RuneDeserializer())
-                .registerTypeAdapter(RuneJsonResponse.class, new RuneJsonDeserializer())
-                .registerTypeAdapter(Mastery.class, new MasteryDeserializer())
-                .registerTypeAdapter(MasteryJsonResponse.class, new MasteryJsonDeserializer())
-                .registerTypeAdapter(Summoner.class, new SummonerDeserializer())
-                .registerTypeAdapter(SummonerJsonResponse.class, new SummonerJsonDeserializer())
-                .create();
         mRestAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://ddragon.leagueoflegends.com/cdn/" + version)
                 .setConverter(new GsonConverter(gson))
@@ -146,7 +148,8 @@ public class DownloadService extends IntentService {
         mDragonService = mRestAdapter.create(DragonService.class);
 
 
-        String localVersion = getSharedPreferences("RiotAPI", MODE_PRIVATE).getString("localVersion", "0");
+        SharedPreferences preferences = getSharedPreferences("RiotAPI", MODE_PRIVATE);
+        String localVersion = preferences.getString("localVersion", "0");
         //If newer version exists, do a full download/insert of database.
         if (versionCompare(localVersion, version) < 0) {
             handleDownloadAllChampions();
@@ -154,6 +157,7 @@ public class DownloadService extends IntentService {
             handleDownloadAllMasteries();
             handleDownloadAllRunes();
             handleDownloadAllSummoners();
+            preferences.edit().putString("localVersion", version).commit();
         }
 
     }
