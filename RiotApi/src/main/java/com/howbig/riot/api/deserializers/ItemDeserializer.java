@@ -26,6 +26,7 @@ public class ItemDeserializer implements JsonDeserializer<Item> {
     public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject obj = (JsonObject) json;
         Item item = new Item();
+        item.id = obj.get("id").getAsInt();
         item.name = obj.get("name").getAsString();
         item.itemRune = context.deserialize(obj.get("itemRune"), new TypeToken<ItemRune>() {
         }.getType());
@@ -36,7 +37,7 @@ public class ItemDeserializer implements JsonDeserializer<Item> {
         item.description = obj.get("description").getAsString();
         if (obj.has("colloq") && !obj.get("colloq").isJsonNull())
             item.colloq = obj.get("colloq").getAsString();
-        if (!obj.get("plaintext").isJsonNull()) {
+        if (obj.has("plaintext") && !obj.get("plaintext").isJsonNull()) {
             item.plaintext = obj.get("plaintext").getAsString();
         }
         item.image = context.deserialize(obj.get("image"), new TypeToken<ItemImage>() {

@@ -16,9 +16,9 @@ public class Passive implements Parcelable {
             return new Passive[size];
         }
     };
-    String name;
-    String description;
-    Image image;
+    public String name;
+    public String description;
+    public Image image;
 
     public Passive() {
     }

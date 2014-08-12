@@ -2,6 +2,8 @@ package com.howbig.riot.type.champion;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,6 +11,7 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.persistence.RiotContentProvider;
+import com.howbig.riot.service.DownloadService;
 
 /**
  * Created by Patrick Dattilio on 5/18/2014.
@@ -65,6 +68,24 @@ public class Champion implements Parcelable {
         this.spells = (Spell[]) in.readParcelableArray(Spell[].class.getClassLoader());
         this.passive = in.readParcelable(Passive.class.getClassLoader());
         this.recommended = (Recommended[]) in.readParcelableArray(Recommended[].class.getClassLoader());
+    }
+
+    public static Champion fromCursor(Cursor c) {
+        Champion champ = new Champion();
+        champ.id = c.getString(c.getColumnIndex(DBHelper.KEY_ID));
+        champ.name = c.getString(c.getColumnIndex(DBHelper.KEY_NAME));
+        Image image = new Image();
+        image.full = c.getString(c.getColumnIndex(DBHelper.KEY_IMAGE));
+        champ.image = image;
+
+        return champ;
+    }
+
+    public static Champion getChampionByName(String name, Context context) {
+        Cursor cursor = context.getContentResolver().query(Champion.CONTENT_URI, new String[]{DBHelper.KEY_JSON}, "name=?", new String[]{name}, null);
+        Champion champion = DownloadService.gson.fromJson(cursor.getString(0), Champion.class);
+        cursor.close();
+        return champion;
     }
 
     public ContentValues getAsContentValues() {

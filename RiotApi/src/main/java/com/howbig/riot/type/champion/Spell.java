@@ -28,8 +28,8 @@ public class Spell implements Parcelable {
     public String cooldownBurn;
     public int[] cost;
     public String costBurn;
-    public int [][] effect;
-    public String [] effectBurn;
+    public int[][] effect;
+    public String[] effectBurn;
     public Vars[] vars;
     public String costType;
     public int[] range;
@@ -51,13 +51,14 @@ public class Spell implements Parcelable {
         this.cooldownBurn = in.readString();
         this.cost = in.createIntArray();
         this.costBurn = in.readString();
+
         int size = in.readInt();
         int[][] array = new int[size][];
         for (int i = 0; i < size; i++) {
-            in.readIntArray(array[i]);
+            array[i] = in.createIntArray();
         }
-
         this.effect = array;
+
         this.effectBurn = in.createStringArray();
         this.vars = (Vars[]) in.readParcelableArray(Vars[].class.getClassLoader());
         this.costType = in.readString();

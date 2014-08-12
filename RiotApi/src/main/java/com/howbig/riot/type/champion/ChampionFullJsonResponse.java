@@ -3,7 +3,7 @@ package com.howbig.riot.type.champion;
 import java.util.Map;
 
 /**
- * Created by Pmoney on 7/26/2014.
+ * Created by Patrick on 7/26/2014.
  */
 public class ChampionFullJsonResponse {
     public String type;

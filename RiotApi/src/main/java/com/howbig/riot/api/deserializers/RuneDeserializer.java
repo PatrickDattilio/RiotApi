@@ -37,10 +37,10 @@ public class RuneDeserializer implements JsonDeserializer<Rune> {
         if (obj.has("group"))
             rune.group = obj.get("group").getAsString();
         rune.description = obj.get("description").getAsString();
-        if (!obj.get("colloq").isJsonNull()) {
+        if (obj.has("colloq") && !obj.get("colloq").isJsonNull()) {
             rune.colloq = obj.get("colloq").getAsString();
         }
-        if (!obj.get("plaintext").isJsonNull()) {
+        if (obj.has("plaintext") && !obj.get("plaintext").isJsonNull()) {
             rune.plaintext = obj.get("plaintext").getAsString();
         }
         if (obj.has("consumed"))

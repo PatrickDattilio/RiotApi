@@ -20,7 +20,7 @@ public class Vars implements Serializable, Parcelable {
     };
     public String link;
     public int[] coeff;
-    public  String key;
+    public String key;
 
     public Vars() {
     }
@@ -31,13 +31,12 @@ public class Vars implements Serializable, Parcelable {
         this.key = in.readString();
     }
 
-    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int size) {
         dest.writeString(this.link);
         dest.writeIntArray(this.coeff);
         dest.writeString(this.key);

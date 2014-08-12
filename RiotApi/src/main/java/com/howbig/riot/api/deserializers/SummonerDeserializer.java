@@ -50,7 +50,7 @@ public class SummonerDeserializer implements JsonDeserializer<Summoner> {
             summoner.range = context.deserialize(obj.get("range"), new TypeToken<int[]>() {
             }.getType());
         } else {
-            summoner.range = obj.get("range").getAsString();
+            summoner.range = new int[]{};
         }
         summoner.rangeBurn = obj.get("rangeBurn").getAsString();
         summoner.image = context.deserialize(obj.get("image"), new TypeToken<ItemImage>() {
