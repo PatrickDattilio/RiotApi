@@ -93,9 +93,11 @@ public class Rune implements Parcelable {
         ContentValues values = new ContentValues();
         values.put(DBHelper.KEY_ID, id);
         values.put(DBHelper.KEY_NAME, name);
-        values.put(DBHelper.KEY_TAGS, tags.toString());
         values.put(DBHelper.KEY_IMAGE, image.full);
+        values.put(DBHelper.KEY_TAGS, tags.toString());
+        values.put(DBHelper.KEY_COLLOQ, colloq);
         values.put(DBHelper.KEY_TIER, rune.tier);
+        values.put(DBHelper.KEY_TYPE, rune.tier);
         values.put(DBHelper.KEY_JSON, new Gson().toJson(this));
         return values;
     }

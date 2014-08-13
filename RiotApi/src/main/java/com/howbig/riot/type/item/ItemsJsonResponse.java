@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class ItemsJsonResponse {
     public String type;
-    public String  version;
+    public String version;
     public Item basic;
     public ArrayList<Item> data;
     public ArrayList<ItemGroup> groups;

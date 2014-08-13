@@ -38,14 +38,14 @@ public class Summoner implements Parcelable {
     public LevelTip leveltip;
     public int[] cooldown;
     public String cooldownBurn;
-    public int [] cost;
+    public int[] cost;
     public String costBurn;
     public Integer[][] effect;
-    public String [] effectBurn;
-    public Vars [] vars;
+    public String[] effectBurn;
+    public Vars[] vars;
     public String key;
     public int summonerLevel;
-    public String [] modes;
+    public String[] modes;
     public String costType;
     public int[] range;
     public String rangeBurn;

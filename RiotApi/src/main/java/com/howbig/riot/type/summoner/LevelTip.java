@@ -16,8 +16,8 @@ public class LevelTip implements Parcelable {
             return new LevelTip[size];
         }
     };
-    public String [] label;
-    public String [] effect;
+    public String[] label;
+    public String[] effect;
 
     public LevelTip() {
     }

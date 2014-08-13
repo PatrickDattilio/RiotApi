@@ -12,5 +12,5 @@ public interface ApiService {
     public static final String API_LANGUAGE = "na";
 
     @GET("/static-data/{lang}/{apiVersion}/versions")
-    public String[] getVersions(@Path("lang") String language, @Path("apiVersion") String apiVersion,@Query("api_key") String apiKey);
+    public String[] getVersions(@Path("lang") String language, @Path("apiVersion") String apiVersion, @Query("api_key") String apiKey);
 }

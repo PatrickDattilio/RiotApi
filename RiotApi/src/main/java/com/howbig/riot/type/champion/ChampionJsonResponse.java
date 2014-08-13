@@ -3,7 +3,7 @@ package com.howbig.riot.type.champion;
 /**
  * Created by Patrick Dattilio on 5/18/2014.
  */
-public class ChampionJsonResponse{
+public class ChampionJsonResponse {
     public String type;
     public String format;
     public String version;

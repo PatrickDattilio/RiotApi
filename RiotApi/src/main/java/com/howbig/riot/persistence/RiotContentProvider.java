@@ -24,6 +24,7 @@ public class RiotContentProvider extends ContentProvider {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     private static final String BASE_PATH = "riot";
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
     static {
         sURIMatcher.addURI(AUTHORITY, "champion", CHAMPION);
         sURIMatcher.addURI(AUTHORITY, "champion/#", CHAMPION_ID);
@@ -38,6 +39,7 @@ public class RiotContentProvider extends ContentProvider {
     }
 
     DBHelper database;
+
     public RiotContentProvider() {
     }
 
@@ -73,7 +75,7 @@ public class RiotContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder) {
+                        String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(getTable(sURIMatcher.match(uri)));
 
@@ -86,7 +88,7 @@ public class RiotContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection,
-            String[] selectionArgs) {
+                      String[] selectionArgs) {
         // TODO: Implement this to handle requests to update one or more rows.
         throw new UnsupportedOperationException("Not yet implemented");
     }
