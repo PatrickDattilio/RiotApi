@@ -6,12 +6,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.persistence.RiotContentProvider;
 import com.howbig.riot.type.Gold;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,8 +95,28 @@ public class Item implements Parcelable {
         values.put(DBHelper.KEY_ID, id);
         values.put(DBHelper.KEY_NAME, name);
         values.put(DBHelper.KEY_IMAGE, image.full);
-        values.put(DBHelper.KEY_TAGS, tags.toString());
+        values.put(DBHelper.KEY_TAGS, Arrays.deepToString(tags));
         values.put(DBHelper.KEY_COLLOQ, colloq);
+        if (maps != null) {
+            ArrayList<String> list = new ArrayList<String>();
+            boolean summonersRift = !maps.containsKey("1") && !maps.containsKey("2");
+            if (summonersRift)
+                list.add("SR");
+            boolean twistedTreeline = !maps.containsKey("4") && !maps.containsKey("10");
+            if (twistedTreeline)
+                list.add("TT");
+            boolean crystalScar = !maps.containsKey("8");
+            if (crystalScar)
+                list.add("CS");
+            boolean howlingAbyss = !maps.containsKey("12");
+            if (howlingAbyss)
+                list.add("HA");
+            String mapsList = TextUtils.join(",", list);
+            values.put(DBHelper.KEY_MAPS, mapsList);
+        } else {
+            values.put(DBHelper.KEY_MAPS, "SR,TT,CS,HA");
+        }
+
         values.put(DBHelper.KEY_JSON, new Gson().toJson(this));
         return values;
     }

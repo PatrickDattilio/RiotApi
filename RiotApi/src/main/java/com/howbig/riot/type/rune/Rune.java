@@ -14,6 +14,7 @@ import com.howbig.riot.type.Gold;
 import com.howbig.riot.type.item.ItemImage;
 import com.howbig.riot.type.item.ItemStats;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,7 +95,7 @@ public class Rune implements Parcelable {
         values.put(DBHelper.KEY_ID, id);
         values.put(DBHelper.KEY_NAME, name);
         values.put(DBHelper.KEY_IMAGE, image.full);
-        values.put(DBHelper.KEY_TAGS, tags.toString());
+        values.put(DBHelper.KEY_TAGS, Arrays.deepToString(tags));
         values.put(DBHelper.KEY_COLLOQ, colloq);
         values.put(DBHelper.KEY_TIER, rune.tier);
         values.put(DBHelper.KEY_TYPE, rune.tier);

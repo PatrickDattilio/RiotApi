@@ -36,13 +36,15 @@ public class DBHelper extends SQLiteOpenHelper {
             KEY_TAGS + " text not null, " +
             KEY_JSON + " text not null );";
     public static final String KEY_COLLOQ = "colloq";
+    public static final String KEY_MAPS = "maps";
     private static final String DATABASE_CREATE_ITEMS = "create table "
             + TABLE_ITEM + "(" +
             KEY_ID + " text not null primary key, " +
             KEY_NAME + " text not null, " +
             KEY_IMAGE + " text not null, " +
             KEY_TAGS + " text not null, " +
-            KEY_COLLOQ + " text not null, " +
+            KEY_COLLOQ + " text, " +
+            KEY_MAPS + " text not null, " +
             KEY_JSON + " text not null );";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_RANKS = "ranks";
@@ -63,7 +65,7 @@ public class DBHelper extends SQLiteOpenHelper {
             KEY_NAME + " text not null, " +
             KEY_IMAGE + " text not null, " +
             KEY_TAGS + " text not null, " +
-            KEY_COLLOQ + " text not null, " +
+            KEY_COLLOQ + " text, " +
             KEY_TIER + " text not null, " +
             KEY_TYPE + " text not null, " +
             KEY_JSON + " text not null );";

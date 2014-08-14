@@ -26,7 +26,8 @@ public class ItemDeserializer implements JsonDeserializer<Item> {
     public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject obj = (JsonObject) json;
         Item item = new Item();
-        item.id = obj.get("id").getAsInt();
+        if (obj.has("id"))
+            item.id = obj.get("id").getAsInt();
         item.name = obj.get("name").getAsString();
         item.itemRune = context.deserialize(obj.get("itemRune"), new TypeToken<ItemRune>() {
         }.getType());
