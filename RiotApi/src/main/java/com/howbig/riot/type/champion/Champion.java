@@ -32,6 +32,7 @@ public class Champion implements Parcelable {
         }
     };
     public String id;
+    public String key;
     public String name;
     public String title;
     public Image image;
@@ -53,6 +54,7 @@ public class Champion implements Parcelable {
 
     private Champion(Parcel in) {
         this.id = in.readString();
+        this.key = in.readString();
         this.name = in.readString();
         this.title = in.readString();
         this.image = in.readParcelable(Image.class.getClassLoader());
@@ -72,7 +74,7 @@ public class Champion implements Parcelable {
 
     public static Champion fromCursor(Cursor c) {
         Champion champ = new Champion();
-        champ.id = c.getString(c.getColumnIndex(DBHelper.KEY_ID));
+        champ.key = c.getString(c.getColumnIndex(DBHelper.KEY_ID));
         champ.name = c.getString(c.getColumnIndex(DBHelper.KEY_NAME));
         Image image = new Image();
         image.full = c.getString(c.getColumnIndex(DBHelper.KEY_IMAGE));
@@ -82,15 +84,28 @@ public class Champion implements Parcelable {
     }
 
     public static Champion getChampionByName(String name, Context context) {
-        Cursor cursor = context.getContentResolver().query(Champion.CONTENT_URI, new String[]{DBHelper.KEY_JSON}, "name=?", new String[]{name}, null);
-        Champion champion = DownloadService.gson.fromJson(cursor.getString(0), Champion.class);
+        return getChampion(context, DBHelper.KEY_NAME, name);
+    }
+
+    public static Champion getChampionById(String id, Context context) {
+        return getChampion(context, DBHelper.KEY_ID, id);
+    }
+
+    public static Champion getChampion(Context context, String column, String value) {
+        Cursor cursor = context.getContentResolver().query(Champion.CONTENT_URI, new String[]{DBHelper.KEY_JSON}, column + "=?", new String[]{value}, null);
+        Champion champion = null;
+
+        if (cursor.moveToFirst()) {
+            champion = DownloadService.gson.fromJson(cursor.getString(0), Champion.class);
+        }
         cursor.close();
+
         return champion;
     }
 
     public ContentValues getAsContentValues() {
         ContentValues values = new ContentValues();
-        values.put(DBHelper.KEY_ID, id);
+        values.put(DBHelper.KEY_ID, key);
         values.put(DBHelper.KEY_NAME, name);
         values.put(DBHelper.KEY_TAGS, tags[0]);
         values.put(DBHelper.KEY_IMAGE, image.full);

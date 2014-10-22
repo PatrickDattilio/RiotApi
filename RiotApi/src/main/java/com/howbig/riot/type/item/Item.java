@@ -1,7 +1,9 @@
 package com.howbig.riot.type.item;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -11,6 +13,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.persistence.RiotContentProvider;
+import com.howbig.riot.service.DownloadService;
 import com.howbig.riot.type.Gold;
 
 import java.util.ArrayList;
@@ -60,6 +63,9 @@ public class Item implements Parcelable {
     public String[] tags;
     public Map<String, Boolean> maps;
 
+    //Build specific field
+    public int count;
+
     public Item() {
     }
 
@@ -88,6 +94,17 @@ public class Item implements Parcelable {
         Bundle mapBundle = in.readBundle();
         for (String key : mapBundle.keySet())
             this.maps.put(key, mapBundle.getBoolean(key));
+        this.count = in.readInt();
+    }
+
+    public static Item getItemById(String id, Activity activity) {
+        Cursor cursor = activity.getContentResolver().query(Item.CONTENT_URI, new String[]{DBHelper.KEY_JSON}, DBHelper.KEY_ID + "=?", new String[]{id}, null);
+        Item item = null;
+        if (cursor.moveToFirst()) {
+            item = DownloadService.gson.fromJson(cursor.getString(0), Item.class);
+        }
+        cursor.close();
+        return item;
     }
 
     public ContentValues getAsContentValues() {
@@ -99,17 +116,13 @@ public class Item implements Parcelable {
         values.put(DBHelper.KEY_COLLOQ, colloq);
         if (maps != null) {
             ArrayList<String> list = new ArrayList<String>();
-            boolean summonersRift = !maps.containsKey("1") && !maps.containsKey("2");
-            if (summonersRift)
+            if (!maps.containsKey("1"))
                 list.add("SR");
-            boolean twistedTreeline = !maps.containsKey("4") && !maps.containsKey("10");
-            if (twistedTreeline)
+            if (!maps.containsKey("10"))
                 list.add("TT");
-            boolean crystalScar = !maps.containsKey("8");
-            if (crystalScar)
+            if (!maps.containsKey("8"))
                 list.add("CS");
-            boolean howlingAbyss = !maps.containsKey("12");
-            if (howlingAbyss)
+            if (!maps.containsKey("12"))
                 list.add("HA");
             String mapsList = TextUtils.join(",", list);
             values.put(DBHelper.KEY_MAPS, mapsList);
@@ -152,5 +165,6 @@ public class Item implements Parcelable {
         for (String key : this.maps.keySet())
             bundle.putBoolean(key, this.maps.get(key));
         dest.writeBundle(bundle);
+        dest.writeInt(count);
     }
 }

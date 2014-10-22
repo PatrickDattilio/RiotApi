@@ -21,7 +21,7 @@ public class VarsDeserializer implements JsonDeserializer<Vars> {
         Vars vars = new Vars();
         vars.link = obj.get("link").getAsString();
         if (obj.get("coeff").isJsonArray()) {
-            vars.coeff = (int[]) context.deserialize(obj.get("coeff"), new TypeToken<int[]>() {
+            vars.coeff = context.deserialize(obj.get("coeff"), new TypeToken<int[]>() {
             }.getType());
         } else {
             vars.coeff = new int[]{obj.get("coeff").getAsInt()};

@@ -2,6 +2,8 @@ package com.howbig.riot.type.rune;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -10,6 +12,7 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.persistence.RiotContentProvider;
+import com.howbig.riot.service.DownloadService;
 import com.howbig.riot.type.Gold;
 import com.howbig.riot.type.item.ItemImage;
 import com.howbig.riot.type.item.ItemStats;
@@ -59,6 +62,9 @@ public class Rune implements Parcelable {
     public String[] tags;
     public Map<String, Boolean> maps;
 
+    //Fields used in a build
+    public String count;
+
     public Rune() {
     }
 
@@ -88,6 +94,23 @@ public class Rune implements Parcelable {
         Bundle mapBundle = in.readBundle();
         for (String key : mapBundle.keySet())
             this.maps.put(key, mapBundle.getBoolean(key));
+        this.count = in.readString();
+    }
+
+    public static Rune getRuneByName(String name, Context context) {
+        return getRune(context, DBHelper.KEY_NAME, name);
+    }
+
+    public static Rune getRuneById(String id, Context context) {
+        return getRune(context, DBHelper.KEY_ID, id);
+    }
+
+    public static Rune getRune(Context context, String column, String value) {
+        Cursor cursor = context.getContentResolver().query(Rune.CONTENT_URI, new String[]{DBHelper.KEY_JSON}, column + "=?", new String[]{value}, null);
+        cursor.moveToFirst();
+        Rune rune = DownloadService.gson.fromJson(cursor.getString(0), Rune.class);
+        cursor.close();
+        return rune;
     }
 
     public ContentValues getAsContentValues() {
@@ -135,5 +158,6 @@ public class Rune implements Parcelable {
         for (String key : this.maps.keySet())
             bundle.putBoolean(key, this.maps.get(key));
         dest.writeBundle(bundle);
+        dest.writeString(count);
     }
 }

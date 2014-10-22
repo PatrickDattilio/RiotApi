@@ -2,6 +2,8 @@ package com.howbig.riot.type.summoner;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,6 +11,7 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.persistence.RiotContentProvider;
+import com.howbig.riot.service.DownloadService;
 import com.howbig.riot.type.Vars;
 import com.howbig.riot.type.item.ItemImage;
 
@@ -84,6 +87,22 @@ public class Summoner implements Parcelable {
         this.resource = in.readString();
     }
 
+    public static Summoner getSummonerByName(String name, Context context) {
+        return getSummoner(context, DBHelper.KEY_NAME, name);
+    }
+
+    public static Summoner getSummonerById(String id, Context context) {
+        return getSummoner(context, DBHelper.KEY_ID, id);
+    }
+
+    public static Summoner getSummoner(Context context, String column, String value) {
+        Cursor cursor = context.getContentResolver().query(Summoner.CONTENT_URI, new String[]{DBHelper.KEY_JSON}, column + "=?", new String[]{value}, null);
+        cursor.moveToFirst();
+        Summoner summoner = DownloadService.gson.fromJson(cursor.getString(0), Summoner.class);
+        cursor.close();
+        return summoner;
+    }
+
     public ContentValues getAsContentValues() {
         ContentValues values = new ContentValues();
         values.put(DBHelper.KEY_ID, id);
@@ -124,4 +143,5 @@ public class Summoner implements Parcelable {
         dest.writeParcelable(this.image, 0);
         dest.writeString(this.resource);
     }
+
 }

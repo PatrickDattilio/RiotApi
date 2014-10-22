@@ -56,7 +56,8 @@ public class DBHelper extends SQLiteOpenHelper {
             KEY_IMAGE + " text not null, " +
             KEY_DESCRIPTION + " text not null, " +
             KEY_RANKS + " text not null, " +
-            KEY_PREREQ + " text not null );";
+            KEY_PREREQ + " text not null , " +
+            KEY_JSON + " text not null );";
     public static final String KEY_TIER = "tier";
     public static final String KEY_TYPE = "type";
     private static final String DATABASE_CREATE_RUNES = "create table "

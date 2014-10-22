@@ -1,13 +1,17 @@
 package com.howbig.riot.type.mastery;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
 import com.howbig.riot.persistence.DBHelper;
 import com.howbig.riot.persistence.RiotContentProvider;
+import com.howbig.riot.service.DownloadService;
 import com.howbig.riot.type.item.ItemImage;
 
 import java.util.ArrayList;
@@ -36,6 +40,8 @@ public class Mastery implements Parcelable {
     public ItemImage image;
     public int ranks;
     public String prereq;
+    //This field is used in a build to indicate how many ranks of this mastery the build uses.
+    public int ranksUsed;
 
     public Mastery() {
     }
@@ -46,7 +52,16 @@ public class Mastery implements Parcelable {
         this.description = (ArrayList<String>) in.readSerializable();
         this.image = in.readParcelable(ItemImage.class.getClassLoader());
         this.ranks = in.readInt();
+        this.ranksUsed = in.readInt();
         this.prereq = in.readString();
+    }
+
+    public static Mastery getMasteryById(String id, Activity activity) {
+        Cursor cursor = activity.getContentResolver().query(Mastery.CONTENT_URI, new String[]{DBHelper.KEY_JSON}, DBHelper.KEY_ID + "=?", new String[]{id}, null);
+        cursor.moveToFirst();
+        Mastery mastery = DownloadService.gson.fromJson(cursor.getString(0), Mastery.class);
+        cursor.close();
+        return mastery;
     }
 
     public ContentValues getAsContentValues() {
@@ -61,6 +76,7 @@ public class Mastery implements Parcelable {
         values.put(DBHelper.KEY_IMAGE, image.full);
         values.put(DBHelper.KEY_RANKS, ranks);
         values.put(DBHelper.KEY_PREREQ, prereq);
+        values.put(DBHelper.KEY_JSON, new Gson().toJson(this));
         return values;
     }
 
@@ -76,6 +92,7 @@ public class Mastery implements Parcelable {
         dest.writeSerializable(this.description);
         dest.writeParcelable(this.image, 0);
         dest.writeInt(this.ranks);
+        dest.writeInt(this.ranksUsed);
         dest.writeString(this.prereq);
     }
 }
